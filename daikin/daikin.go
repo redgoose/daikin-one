@@ -29,7 +29,7 @@ func GetToken() string {
 		panic(err)
 	}
 
-	r.Header.Add("Content-Type", "application/json")
+	r.Header.Add("content-type", "application/json")
 	r.Header.Add("x-api-key", viper.GetString("apiKey"))
 
 	res, err := httpClient.Do(r)

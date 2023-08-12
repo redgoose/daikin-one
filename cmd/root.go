@@ -9,10 +9,12 @@ import (
 )
 
 var cfgFile string
+var deviceId string
+var dbPath string
 
 var rootCmd = &cobra.Command{
 	Use:   "daikin-one",
-	Short: "daikin-one is a cli to interact with Daikin One thermostats",
+	Short: "daikin-one is a cli to interact with Daikin One devices",
 }
 
 func Execute() {
@@ -47,7 +49,6 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Error: config file `%s` not found\n", cfgFile)
-		os.Exit(1)
+		cobra.CheckErr(err)
 	}
 }

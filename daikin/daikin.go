@@ -18,7 +18,7 @@ type Token struct {
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 var urlBase string = "https://integrator-api.daikinskyport.com"
 
-func GetToken() (string, error) {
+func GetToken() string {
 	body := []byte(`{
 		"email": "` + viper.GetString("email") + `",
 		"integratorToken": "` + viper.GetString("integratorToken") + `"
@@ -49,5 +49,5 @@ func GetToken() (string, error) {
 		panic(res.Status)
 	}
 
-	return token.AccessToken, nil
+	return token.AccessToken
 }

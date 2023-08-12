@@ -4,22 +4,18 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-var listCmd = &cobra.Command{
+var logCmd = &cobra.Command{
 	Use:   "log",
 	Args:  cobra.NoArgs,
 	Short: "Logs thermostat metrics to local SQLite database",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(deviceId)
+		fmt.Println(viper.GetString("deviceId"))
 	},
 }
 
 func init() {
-	listCmd.Flags().StringVarP(&deviceId, "device-id", "d", "", "Daikin device ID")
-	listCmd.MarkFlagRequired("device-id")
-
-	listCmd.Flags().StringVar(&dbPath, "db", "daikin.db", "Path to SQLite db")
-
-	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(logCmd)
 }

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
@@ -50,14 +49,11 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
-		if viper.GetString("integratorToken") == "" {
-			cobra.CheckErr(errors.New("integratorToken not defined in config"))
-		}
-		if viper.GetString("apiKey") == "" {
-			cobra.CheckErr(errors.New("apiKey not defined in config"))
-		}
-		if viper.GetString("email") == "" {
-			cobra.CheckErr(errors.New("email not defined in config"))
+		configValues := []string{"integratorToken", "apiKey", "email"}
+		for _, configValue := range configValues {
+			if viper.GetString(configValue) == "" {
+				cobra.CheckErr(fmt.Errorf("%s not defined in config", configValue))
+			}
 		}
 	} else {
 		cobra.CheckErr(err)

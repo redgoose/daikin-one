@@ -10,7 +10,7 @@ import (
 var chartCmd = &cobra.Command{
 	Use:   "chart",
 	Args:  cobra.NoArgs,
-	Short: "Generates charts based on collected log metrics",
+	Short: "Generates charts based on collected device metrics",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(dbPath)
 	},

@@ -27,7 +27,9 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.daikin.yaml)")
+	home, err := os.UserHomeDir()
+	cobra.CheckErr(err)
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", home+"/.daikin.yaml", "config file")
 }
 
 func initConfig() {

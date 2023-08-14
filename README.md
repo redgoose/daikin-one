@@ -80,4 +80,4 @@ Run `daikin-one -h` and `daikin-one device -h` for a full list of available comm
 
 ## License
 
-MIT © redgoose, see [LICENSE](https://github.com/regdoose/daikin-one/blob/master/LICENSE) for details.
+MIT © redgoose, see [LICENSE](https://github.com/redgoose/daikin-one/blob/master/LICENSE) for details.

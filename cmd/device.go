@@ -40,8 +40,8 @@ var lsCmd = &cobra.Command{
 	},
 }
 
-var updateCmd = &cobra.Command{
-	Use:   "update",
+var modeSetpointCmd = &cobra.Command{
+	Use:   "mode-setpoint",
 	Args:  cobra.NoArgs,
 	Short: "Update device operating mode and heat/cool setpoints",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -63,13 +63,13 @@ func init() {
 
 	deviceCmd.AddCommand(lsCmd)
 
-	deviceCmd.AddCommand(updateCmd)
-	updateCmd.Flags().StringVarP(&deviceId, "device-id", "d", "", "Daikin device ID")
-	updateCmd.Flags().IntVarP(&deviceMode, "mode", "", 0, "Device mode")
-	updateCmd.Flags().Float32VarP(&deviceHeatSetpoint, "heat", "", 0, "Heat setpoint")
-	updateCmd.Flags().Float32VarP(&deviceCoolSetpoint, "cool", "", 0, "Cool setpoint")
-	updateCmd.MarkFlagRequired("device-id")
-	updateCmd.MarkFlagRequired("mode")
-	updateCmd.MarkFlagRequired("heat")
-	updateCmd.MarkFlagRequired("cool")
+	deviceCmd.AddCommand(modeSetpointCmd)
+	modeSetpointCmd.Flags().StringVarP(&deviceId, "device-id", "d", "", "Daikin device ID")
+	modeSetpointCmd.Flags().IntVarP(&deviceMode, "mode", "", 0, "Device mode")
+	modeSetpointCmd.Flags().Float32VarP(&deviceHeatSetpoint, "heat", "", 0, "Heat setpoint")
+	modeSetpointCmd.Flags().Float32VarP(&deviceCoolSetpoint, "cool", "", 0, "Cool setpoint")
+	modeSetpointCmd.MarkFlagRequired("device-id")
+	modeSetpointCmd.MarkFlagRequired("mode")
+	modeSetpointCmd.MarkFlagRequired("heat")
+	modeSetpointCmd.MarkFlagRequired("cool")
 }

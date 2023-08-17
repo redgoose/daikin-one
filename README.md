@@ -2,7 +2,7 @@
 
 ## Overview
 
-Daikin One is a lightweight CLI wrapper for the [Daikin Open API](https://www.daikinone.com/openapi/index.html) to manage Daikin One devices/thermostats. 
+Daikin One is a lightweight CLI wrapper for the [Daikin Open API](https://www.daikinone.com/openapi/index.html) to manage Daikin One devices/thermostats.
 
 It is augmented with logging and chart generation functionality to provide historical usage insights which is missing from Daikin One devices.
 
@@ -15,7 +15,7 @@ It is augmented with logging and chart generation functionality to provide histo
 	go install github.com/redgoose/daikin-one@latest
 	```
 
-3. Copy `.daikin.yml` to your home directory and populate with your integrator token, api key, and email. Refer to the [getting started](https://www.daikinone.com/openapi/documentation/index.html#gettingstarted) section of the Daikin Open API documentation to get those values.
+3. Copy `config/.daikin.yaml` to your home directory and populate with your integrator token, api key, and email. Refer to the [getting started](https://www.daikinone.com/openapi/documentation/index.html#gettingstarted) section of the Daikin Open API documentation to get those values.
 
 
 4. Get a device id for the device you want to manage:

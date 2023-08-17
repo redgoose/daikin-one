@@ -79,6 +79,35 @@ It is augmented with logging and chart generation functionality to provide histo
 
 Run `daikin-one -h` and `daikin-one device -h` for a full list of available commands.
 
+## Logging
+
+1. Copy `config/daikin.db` to your home directory.
+2. Run the following to start logging:
+	```sh
+	daikin-one log -d <device-id>
+	```
+
+	This will log your device metrics to the local SQLite database every 5 minutes.
+
+	Ideally you run this using your operating system's service manager. ie. I use ubuntu's systemd. An example `daikin_one.service` file is below:
+
+	```sh
+	[Unit]
+	Description=daikin one
+
+	[Service]
+	User=foo
+	Group=foo
+	ExecStart=/home/foo/go/bin/daikin-one log -d <device-id>
+
+	[Install]
+	WantedBy=multi-user.target
+	```
+
+## Charts
+
+Under development
+
 ## License
 
 MIT © redgoose, see [LICENSE](https://github.com/redgoose/daikin-one/blob/master/LICENSE) for details.

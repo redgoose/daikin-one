@@ -31,7 +31,7 @@ var logCmd = &cobra.Command{
 			}
 
 			db.LogData(dbPath, data)
-			fmt.Println(time.Now().Format(time.RFC3339) + " - Logged metrics")
+			fmt.Println(time.Now().Format(time.RFC3339) + " - Logged data")
 
 			time.Sleep(5 * time.Minute)
 		}

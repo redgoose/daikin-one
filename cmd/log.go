@@ -22,13 +22,15 @@ var logCmd = &cobra.Command{
 				DeviceId:        deviceId,
 				TempIndoor:      deviceInfo.TempIndoor,
 				TempOutdoor:     deviceInfo.TempOutdoor,
+				HumidityIndoor:  deviceInfo.HumIndoor,
+				HumidityOutdoor: deviceInfo.HumOutdoor,
 				CoolSetpoint:    deviceInfo.CoolSetpoint,
 				HeatSetpoint:    deviceInfo.HeatSetpoint,
 				EquipmentStatus: deviceInfo.EquipmentStatus,
 			}
 
 			db.LogMetrics(dbPath, metric)
-			fmt.Println("Logged metrics")
+			fmt.Println(time.Now().Format(time.RFC3339) + " - Logged metrics")
 
 			time.Sleep(5 * time.Minute)
 		}

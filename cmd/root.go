@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -29,25 +30,12 @@ func init() {
 
 	home, err := os.UserHomeDir()
 	cobra.CheckErr(err)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", home+"/.daikin.yaml", "config file")
+
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", filepath.Join(home, ".daikin", "daikin.yaml"), "config file")
 }
 
 func initConfig() {
-
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		cfgFile = ".daikin.yaml"
-
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(cfgFile)
-	}
-
+	viper.SetConfigFile(cfgFile)
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {

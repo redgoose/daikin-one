@@ -15,7 +15,7 @@ It is augmented with logging and chart generation functionality to provide histo
 	go install github.com/redgoose/daikin-one@latest
 	```
 
-3. Copy `config/.daikin.yaml` to your home directory and populate with your integrator token, api key, and email. Refer to the [getting started](https://www.daikinone.com/openapi/documentation/index.html#gettingstarted) section of the Daikin Open API documentation to get those values.
+3. Create a folder named `.daikin` in your home directory. Copy `config/daikin.yaml` to `.daikin/daikin.yaml` in your home directory and populate with your integrator token, api key, and email. Refer to the [getting started](https://www.daikinone.com/openapi/documentation/index.html#gettingstarted) section of the Daikin Open API documentation to get those values.
 
 
 4. Get a device id for the device you want to manage:
@@ -81,7 +81,7 @@ Run `daikin-one -h` and `daikin-one device -h` for a full list of available comm
 
 ## Logging
 
-1. Copy `config/daikin.db` to your home directory.
+1. Copy `config/daikin.db` to `.daikin/daikin.db` in your home directory.
 2. Run the following to start logging:
 	```sh
 	daikin-one log -d <device-id>

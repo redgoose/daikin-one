@@ -87,7 +87,7 @@ Run `daikin-one -h` and `daikin-one device -h` for a full list of available comm
 	daikin-one log -d <device-id>
 	```
 
-	This will log your device metrics to the local SQLite database every 5 minutes.
+	This will log your device data to the local SQLite database every 5 minutes.
 
 	Ideally you run this using your operating system's service manager. ie. Using Ubuntu's systemd, an example `daikin_one.service` file would look like:
 

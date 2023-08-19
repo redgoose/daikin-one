@@ -14,7 +14,7 @@ import (
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Args:  cobra.NoArgs,
-	Short: "Logs device metrics to local SQLite database",
+	Short: "Logs device data to local SQLite database",
 	Run: func(cmd *cobra.Command, args []string) {
 		for {
 			var deviceInfo = daikin.GetDeviceInfo(deviceId)

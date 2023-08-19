@@ -19,7 +19,7 @@ var logCmd = &cobra.Command{
 		for {
 			var deviceInfo = daikin.GetDeviceInfo(deviceId)
 
-			var metric = db.Metrics{
+			var data = db.DeviceData{
 				DeviceId:        deviceId,
 				TempIndoor:      deviceInfo.TempIndoor,
 				TempOutdoor:     deviceInfo.TempOutdoor,
@@ -30,7 +30,7 @@ var logCmd = &cobra.Command{
 				EquipmentStatus: deviceInfo.EquipmentStatus,
 			}
 
-			db.LogMetrics(dbPath, metric)
+			db.LogData(dbPath, data)
 			fmt.Println(time.Now().Format(time.RFC3339) + " - Logged metrics")
 
 			time.Sleep(5 * time.Minute)

@@ -7,7 +7,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type Metrics struct {
+type DeviceData struct {
 	DeviceId        string
 	TempIndoor      float32
 	TempOutdoor     float32
@@ -18,7 +18,7 @@ type Metrics struct {
 	EquipmentStatus int
 }
 
-func LogMetrics(dbPath string, metrics Metrics) {
+func LogData(dbPath string, data DeviceData) {
 	db, err := sql.Open("sqlite3", dbPath)
 	checkErr(err)
 
@@ -29,14 +29,14 @@ func LogMetrics(dbPath string, metrics Metrics) {
 
 	_, err = stmt.Exec(
 		timestamp,
-		metrics.DeviceId,
-		metrics.TempIndoor,
-		metrics.TempOutdoor,
-		metrics.HumidityIndoor,
-		metrics.HumidityOutdoor,
-		metrics.CoolSetpoint,
-		metrics.HeatSetpoint,
-		metrics.EquipmentStatus,
+		data.DeviceId,
+		data.TempIndoor,
+		data.TempOutdoor,
+		data.HumidityIndoor,
+		data.HumidityOutdoor,
+		data.CoolSetpoint,
+		data.HeatSetpoint,
+		data.EquipmentStatus,
 	)
 	checkErr(err)
 }

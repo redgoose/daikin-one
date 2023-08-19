@@ -56,8 +56,8 @@ var modeSetpointCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(deviceCmd)
-	deviceCmd.AddCommand(infoCmd)
 
+	deviceCmd.AddCommand(infoCmd)
 	infoCmd.Flags().StringVarP(&deviceId, "device-id", "d", "", "Daikin device ID")
 	infoCmd.MarkFlagRequired("device-id")
 

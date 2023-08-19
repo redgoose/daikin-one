@@ -4,7 +4,7 @@
 
 Daikin One is a lightweight CLI wrapper for the [Daikin Open API](https://www.daikinone.com/openapi/index.html) to manage Daikin One devices/thermostats.
 
-It is augmented with logging and chart generation functionality to provide historical usage insights which is missing from Daikin One devices.
+It is augmented with logging and reporting functionality to provide historical usage insights which is missing from Daikin One devices.
 
 ## Quick Start
 
@@ -104,7 +104,7 @@ Run `daikin-one -h` and `daikin-one device -h` for a full list of available comm
 	WantedBy=multi-user.target
 	```
 
-## Charts
+## Reports
 
 Under development
 

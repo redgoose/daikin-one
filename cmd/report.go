@@ -26,11 +26,12 @@ var reportSummaryCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(reportCmd)
 
-	reportCmd.AddCommand(reportSummaryCmd)
-	reportSummaryCmd.Flags().StringVarP(&deviceId, "device-id", "d", "", "Daikin device ID")
-	reportSummaryCmd.MarkFlagRequired("device-id")
-
 	home, err := os.UserHomeDir()
 	cobra.CheckErr(err)
-	reportSummaryCmd.Flags().StringVarP(&dbPath, "db", "", filepath.Join(home, ".daikin", "daikin.db"), "Local path to SQLite database")
+
+	rootCmd.PersistentFlags().StringVarP(&deviceId, "device-id", "d", "", "Daikin device ID")
+	rootCmd.PersistentFlags().StringVarP(&dbPath, "db", "", filepath.Join(home, ".daikin", "daikin.db"), "Local path to SQLite database")
+	rootCmd.MarkPersistentFlagRequired("device-id")
+
+	reportCmd.AddCommand(reportSummaryCmd)
 }

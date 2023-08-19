@@ -31,7 +31,7 @@ func init() {
 	home, err := os.UserHomeDir()
 	cobra.CheckErr(err)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", filepath.Join(home, ".daikin", "daikin.yaml"), "config file")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", filepath.Join(home, ".daikin", "daikin.yaml"), "config file")
 }
 
 func initConfig() {

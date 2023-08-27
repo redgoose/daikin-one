@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0; background-color:#100C2A">
+    <p style="color:#fff; text-align:center">{{.Title}}</p>
+    <div id="container" style="height: 500px"></div>
+
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, 'dark', {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    const colors = ['#3d8dad', '#d0b108', '#57b370', '#3d8dad', '#d46728', '#7540ad', '#ba339d'];
+option = {
+  color: colors,
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross'
+    }
+  },
+  grid: {
+    right: '20%'
+  },
+  legend: {
+    data: ['Run time', 'Indoor temperature', 'Outdoor temperature', 'Indoor humidity', 'Outdoor humidity', 'Cool setpoint', 'Heat setpoint']
+  },
+  xAxis: [
+    {
+      type: 'category',
+      name: 'Hour',
+      nameLocation: 'center',
+      nameGap: 30,
+      axisTick: {
+        alignWithLabel: true
+      },
+      data: [
+        {{ range .Hour }}
+        '{{ . }}',
+        {{ end }}
+      ]
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value',
+      name: 'Run time',
+      position: 'left',
+      alignTicks: true,
+      axisLine: {
+        show: true,
+      },
+      axisLabel: {
+        formatter: '{value} min'
+      }
+    },
+    {
+      type: 'value',
+      name: 'Temperature',
+      position: 'right',
+      alignTicks: true,
+      axisLine: {
+        show: true,
+      },
+      axisLabel: {
+        formatter: '{value} °C'
+      },
+    },
+    {
+      type: 'value',
+      name: 'Humidity',
+      offset: 80,
+      position: 'right',
+      alignTicks: true,
+      axisLine: {
+        show: true,
+      },
+      axisLabel: {
+        formatter: '{value} %'
+      },
+    }
+  ],
+  series: [
+    {
+      name: 'Run time',
+      type: 'bar',
+      data: [
+        {{ range .RunTime }}
+        {{ . }},
+        {{ end }}
+      ]
+    },
+    {
+      name: 'Indoor temperature',
+      type: 'line',
+      yAxisIndex: 1,
+      data: [
+        {{ range .TempIndoor }}
+        {{ . }},
+        {{ end }}
+      ]
+    },
+    {
+      name: 'Outdoor temperature',
+      type: 'line',
+      yAxisIndex: 1,
+      data: [
+        {{ range .TempOutdoor }}
+        {{ . }},
+        {{ end }}
+      ]
+    },
+    {
+      name: 'Cool setpoint',
+      type: 'line',
+      yAxisIndex: 1,
+      data: [
+        {{ range .CoolSetpoint }}
+        {{ . }},
+        {{ end }}
+      ]
+    },
+    {
+      name: 'Heat setpoint',
+      type: 'line',
+      yAxisIndex: 1,
+      data: [
+        {{ range .HeatSetpoint }}
+        {{ . }},
+        {{ end }}
+      ]
+    },
+    {
+      name: 'Indoor humidity',
+      type: 'line',
+      yAxisIndex: 2,
+      data: [
+        {{ range .HumidityIndoor }}
+        {{ . }},
+        {{ end }}
+      ]
+    },
+    {
+      name: 'Outdoor humidity',
+      type: 'line',
+      yAxisIndex: 2,
+      data: [
+        {{ range .HumidityOutdoor }}
+        {{ . }},
+        {{ end }}
+      ]
+    }
+
+  ]
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>

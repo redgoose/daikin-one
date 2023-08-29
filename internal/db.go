@@ -27,14 +27,14 @@ type DeviceData struct {
 }
 
 type DayData struct {
-	Hour            []string
-	TempIndoor      []float32
-	TempOutdoor     []float32
-	HumidityIndoor  []float32
-	HumidityOutdoor []float32
-	CoolSetpoint    []float32
-	HeatSetpoint    []float32
-	RunTime         []int
+	Hour            string
+	TempIndoor      float32
+	TempOutdoor     float32
+	HumidityIndoor  float32
+	HumidityOutdoor float32
+	CoolSetpoint    float32
+	HeatSetpoint    float32
+	RunTime         int
 }
 
 func LogData(dbPath string, data DeviceData) {
@@ -60,7 +60,7 @@ func LogData(dbPath string, data DeviceData) {
 	checkErr(err)
 }
 
-func GetDataForDay(dbPath string, deviceId string, day time.Time) DayData {
+func GetDataForDay(dbPath string, deviceId string, day time.Time) []DayData {
 	db, err := sql.Open("sqlite3", dbPath)
 	checkErr(err)
 
@@ -88,39 +88,23 @@ func GetDataForDay(dbPath string, deviceId string, day time.Time) DayData {
 
 	defer rows.Close()
 
-	var dayData DayData
+	var dayData []DayData
 
 	for rows.Next() {
-		var (
-			hour            string
-			tempIndoor      float32
-			tempOutdoor     float32
-			humidityIndoor  float32
-			humidityOutdoor float32
-			coolSetpoint    float32
-			heatSetpoint    float32
-			runTime         int
-		)
+		var data DayData
+
 		err := rows.Scan(
-			&hour,
-			&tempIndoor,
-			&tempOutdoor,
-			&humidityIndoor,
-			&humidityOutdoor,
-			&coolSetpoint,
-			&heatSetpoint,
-			&runTime,
+			&data.Hour,
+			&data.TempIndoor,
+			&data.TempOutdoor,
+			&data.HumidityIndoor,
+			&data.HumidityOutdoor,
+			&data.CoolSetpoint,
+			&data.HeatSetpoint,
+			&data.RunTime,
 		)
 		checkErr(err)
-
-		dayData.Hour = append(dayData.Hour, hour)
-		dayData.TempIndoor = append(dayData.TempIndoor, tempIndoor)
-		dayData.TempOutdoor = append(dayData.TempOutdoor, tempOutdoor)
-		dayData.HumidityIndoor = append(dayData.HumidityIndoor, humidityIndoor)
-		dayData.HumidityOutdoor = append(dayData.HumidityOutdoor, humidityOutdoor)
-		dayData.CoolSetpoint = append(dayData.CoolSetpoint, coolSetpoint)
-		dayData.HeatSetpoint = append(dayData.HeatSetpoint, heatSetpoint)
-		dayData.RunTime = append(dayData.RunTime, runTime)
+		dayData = append(dayData, data)
 	}
 
 	err = rows.Err()

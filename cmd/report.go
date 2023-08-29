@@ -26,27 +26,13 @@ var reportSummaryCmd = &cobra.Command{
 		var data = db.GetDataForDay(dbPath, deviceId, time.Now())
 
 		type Foo struct {
-			Title           string
-			Hour            []string
-			TempIndoor      []float32
-			TempOutdoor     []float32
-			HumidityIndoor  []float32
-			HumidityOutdoor []float32
-			CoolSetpoint    []float32
-			HeatSetpoint    []float32
-			RunTime         []int
+			Title   string
+			DayData []db.DayData
 		}
 
 		data2 := Foo{
-			Title:           time.Now().Format("2006-01-02"),
-			Hour:            data.Hour,
-			TempIndoor:      data.TempIndoor,
-			TempOutdoor:     data.TempOutdoor,
-			HumidityIndoor:  data.HumidityIndoor,
-			HumidityOutdoor: data.HumidityOutdoor,
-			CoolSetpoint:    data.CoolSetpoint,
-			HeatSetpoint:    data.HeatSetpoint,
-			RunTime:         data.RunTime,
+			Title:   time.Now().Format("2006-01-02"),
+			DayData: data,
 		}
 
 		tmpl := template.Must(template.ParseFiles("templates/chart.tmpl"))

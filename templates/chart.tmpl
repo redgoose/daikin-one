@@ -44,8 +44,8 @@ option = {
         alignWithLabel: true
       },
       data: [
-        {{ range .Hour }}
-        '{{ . }}',
+        {{ range .DayData }}
+        '{{ .Hour }}',
         {{ end }}
       ]
     }
@@ -94,8 +94,8 @@ option = {
       name: 'Run time',
       type: 'bar',
       data: [
-        {{ range .RunTime }}
-        {{ . }},
+        {{ range .DayData }}
+        {{ .RunTime }},
         {{ end }}
       ]
     },
@@ -104,8 +104,8 @@ option = {
       type: 'line',
       yAxisIndex: 1,
       data: [
-        {{ range .TempIndoor }}
-        {{ . }},
+        {{ range .DayData }}
+        {{ .TempIndoor }},
         {{ end }}
       ]
     },
@@ -114,8 +114,8 @@ option = {
       type: 'line',
       yAxisIndex: 1,
       data: [
-        {{ range .TempOutdoor }}
-        {{ . }},
+        {{ range .DayData }}
+        {{ .TempOutdoor }},
         {{ end }}
       ]
     },
@@ -124,8 +124,8 @@ option = {
       type: 'line',
       yAxisIndex: 1,
       data: [
-        {{ range .CoolSetpoint }}
-        {{ . }},
+        {{ range .DayData }}
+        {{ .CoolSetpoint }},
         {{ end }}
       ]
     },
@@ -134,8 +134,8 @@ option = {
       type: 'line',
       yAxisIndex: 1,
       data: [
-        {{ range .HeatSetpoint }}
-        {{ . }},
+        {{ range .DayData }}
+        {{ .HeatSetpoint }},
         {{ end }}
       ]
     },
@@ -144,8 +144,8 @@ option = {
       type: 'line',
       yAxisIndex: 2,
       data: [
-        {{ range .HumidityIndoor }}
-        {{ . }},
+        {{ range .DayData }}
+        {{ .HumidityIndoor }},
         {{ end }}
       ]
     },
@@ -154,8 +154,8 @@ option = {
       type: 'line',
       yAxisIndex: 2,
       data: [
-        {{ range .HumidityOutdoor }}
-        {{ . }},
+        {{ range .DayData }}
+        {{ .HumidityOutdoor }},
         {{ end }}
       ]
     }

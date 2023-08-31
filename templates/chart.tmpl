@@ -1,173 +1,123 @@
-<!DOCTYPE html>
-<html lang="en" style="height: 100%">
-<head>
-  <meta charset="utf-8">
-</head>
-<body style="height: 100%; margin: 0; background-color:#100C2A">
-    <p style="color:#fff; text-align:center">{{.Title}}</p>
-    <div id="container" style="height: 500px"></div>
+<p style="color:#fff; text-align:center">{{.Title}}</p>
+<div id="{{.Title}}" style="height: 500px"></div>
 
-  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-
-  <script type="text/javascript">
-    var dom = document.getElementById('container');
-    var myChart = echarts.init(dom, 'dark', {
-      renderer: 'canvas',
-      useDirtyRect: false
+<script type="text/javascript">
+    var dom = document.getElementById('{{.Title}}');
+    var chart = echarts.init(dom, 'dark', {
+        renderer: 'canvas',
+        useDirtyRect: false
     });
-    var app = {};
+    var colors = ['#3d8dad', '#d0b108', '#57b370', '#3d8dad', '#d46728', '#7540ad', '#ba339d'];
+    var option = {
+        color: colors,
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            }
+        },
+        grid: {
+            right: '20%'
+        },
+        legend: {
+            data: ['Run time', 'Indoor temperature', 'Outdoor temperature', 'Indoor humidity', 'Outdoor humidity', 'Cool setpoint', 'Heat setpoint']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                name: '{{.XAxisLabel}}',
+                nameLocation: 'center',
+                nameGap: 30,
+                axisTick: {
+                    alignWithLabel: true
+                },
+                data: [{{ range .Data }}'{{ .Period }}', {{ end }}]
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: 'Run time',
+                position: 'left',
+                alignTicks: true,
+                axisLine: {
+                    show: true,
+                },
+                axisLabel: {
+                    formatter: '{value} min'
+                }
+            },
+            {
+                type: 'value',
+                name: 'Temperature',
+                position: 'right',
+                alignTicks: true,
+                axisLine: {
+                    show: true,
+                },
+                axisLabel: {
+                    formatter: '{value} °{{.TempUnit}}'
+                },
+            },
+            {
+                type: 'value',
+                name: 'Humidity',
+                offset: 80,
+                position: 'right',
+                alignTicks: true,
+                axisLine: {
+                    show: true,
+                },
+                axisLabel: {
+                    formatter: '{value} %'
+                },
+            }
+        ],
+        series: [
+            {
+                name: 'Run time',
+                type: 'bar',
+                data: [{{ range .Data }}{{ .RunTime }}, {{ end }}]
+            },
+            {
+                name: 'Indoor temperature',
+                type: 'line',
+                yAxisIndex: 1,
+                data: [{{ range .Data }}{{ .TempIndoor }}, {{ end }}]
+            },
+            {
+                name: 'Outdoor temperature',
+                type: 'line',
+                yAxisIndex: 1,
+                data: [{{ range .Data }}{{ .TempOutdoor }}, {{ end }}]
+            },
+            {
+                name: 'Cool setpoint',
+                type: 'line',
+                yAxisIndex: 1,
+                data: [{{ range .Data }}{{ .CoolSetpoint }}, {{ end }}]
+            },
+            {
+                name: 'Heat setpoint',
+                type: 'line',
+                yAxisIndex: 1,
+                data: [{{ range .Data }}{{ .HeatSetpoint }}, {{ end }}]
+            },
+            {
+                name: 'Indoor humidity',
+                type: 'line',
+                yAxisIndex: 2,
+                data: [{{ range .Data }}{{ .HumidityIndoor }}, {{ end }}]
+            },
+            {
+                name: 'Outdoor humidity',
+                type: 'line',
+                yAxisIndex: 2,
+                data: [{{ range .Data }}{{ .HumidityOutdoor }}, {{ end }}]
+            }
+        ]
+    };
 
-    var option;
-
-    const colors = ['#3d8dad', '#d0b108', '#57b370', '#3d8dad', '#d46728', '#7540ad', '#ba339d'];
-option = {
-  color: colors,
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'cross'
-    }
-  },
-  grid: {
-    right: '20%'
-  },
-  legend: {
-    data: ['Run time', 'Indoor temperature', 'Outdoor temperature', 'Indoor humidity', 'Outdoor humidity', 'Cool setpoint', 'Heat setpoint']
-  },
-  xAxis: [
-    {
-      type: 'category',
-      name: 'Hour',
-      nameLocation: 'center',
-      nameGap: 30,
-      axisTick: {
-        alignWithLabel: true
-      },
-      data: [
-        {{ range .DayData }}
-        '{{ .Hour }}',
-        {{ end }}
-      ]
-    }
-  ],
-  yAxis: [
-    {
-      type: 'value',
-      name: 'Run time',
-      position: 'left',
-      alignTicks: true,
-      axisLine: {
-        show: true,
-      },
-      axisLabel: {
-        formatter: '{value} min'
-      }
-    },
-    {
-      type: 'value',
-      name: 'Temperature',
-      position: 'right',
-      alignTicks: true,
-      axisLine: {
-        show: true,
-      },
-      axisLabel: {
-        formatter: '{value} °C'
-      },
-    },
-    {
-      type: 'value',
-      name: 'Humidity',
-      offset: 80,
-      position: 'right',
-      alignTicks: true,
-      axisLine: {
-        show: true,
-      },
-      axisLabel: {
-        formatter: '{value} %'
-      },
-    }
-  ],
-  series: [
-    {
-      name: 'Run time',
-      type: 'bar',
-      data: [
-        {{ range .DayData }}
-        {{ .RunTime }},
-        {{ end }}
-      ]
-    },
-    {
-      name: 'Indoor temperature',
-      type: 'line',
-      yAxisIndex: 1,
-      data: [
-        {{ range .DayData }}
-        {{ .TempIndoor }},
-        {{ end }}
-      ]
-    },
-    {
-      name: 'Outdoor temperature',
-      type: 'line',
-      yAxisIndex: 1,
-      data: [
-        {{ range .DayData }}
-        {{ .TempOutdoor }},
-        {{ end }}
-      ]
-    },
-    {
-      name: 'Cool setpoint',
-      type: 'line',
-      yAxisIndex: 1,
-      data: [
-        {{ range .DayData }}
-        {{ .CoolSetpoint }},
-        {{ end }}
-      ]
-    },
-    {
-      name: 'Heat setpoint',
-      type: 'line',
-      yAxisIndex: 1,
-      data: [
-        {{ range .DayData }}
-        {{ .HeatSetpoint }},
-        {{ end }}
-      ]
-    },
-    {
-      name: 'Indoor humidity',
-      type: 'line',
-      yAxisIndex: 2,
-      data: [
-        {{ range .DayData }}
-        {{ .HumidityIndoor }},
-        {{ end }}
-      ]
-    },
-    {
-      name: 'Outdoor humidity',
-      type: 'line',
-      yAxisIndex: 2,
-      data: [
-        {{ range .DayData }}
-        {{ .HumidityOutdoor }},
-        {{ end }}
-      ]
-    }
-
-  ]
-};
-
-    if (option && typeof option === 'object') {
-      myChart.setOption(option);
-    }
-
-    window.addEventListener('resize', myChart.resize);
-  </script>
-</body>
-</html>
+    chart.setOption(option);
+    window.addEventListener('resize', chart.resize);
+</script>

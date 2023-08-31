@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -10,6 +9,7 @@ import (
 
 	db "github.com/redgoose/daikin-one/internal"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var reportCmd = &cobra.Command{
@@ -23,25 +23,71 @@ var reportSummaryCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Short: "Generates summary report",
 	Run: func(cmd *cobra.Command, args []string) {
-		var data = db.GetDataForDay(dbPath, deviceId, time.Now())
+		tempUnit := viper.GetString("temperatureUnit")
 
-		type Foo struct {
-			Title   string
-			DayData []db.DayData
+		type Chart struct {
+			Title      string
+			Data       []db.PeriodData
+			XAxisLabel string
+			TempUnit   string
 		}
 
-		data2 := Foo{
-			Title:   time.Now().Format("2006-01-02"),
-			DayData: data,
+		chartTmpl := template.Must(template.ParseFiles("templates/chart.tmpl"))
+		charts := ""
+
+		// last 7 days
+		for i := 0; i <= 6; i++ {
+			date := time.Now().Add(time.Duration(-i*24) * time.Hour)
+			data := db.GetDataForDay(dbPath, deviceId, date)
+
+			if len(data) == 0 {
+				continue
+			}
+
+			chart := Chart{
+				Title:      date.Format("January 2 2006"),
+				Data:       data,
+				XAxisLabel: "Hour",
+				TempUnit:   tempUnit,
+			}
+
+			buf := new(bytes.Buffer)
+			chartTmpl.Execute(buf, chart)
+			charts += buf.String()
 		}
 
-		tmpl := template.Must(template.ParseFiles("templates/chart.tmpl"))
+		// current month
+		monthData := db.GetDataForMonth(dbPath, deviceId, time.Now())
+		if len(monthData) > 0 {
+			chart := Chart{
+				Title:      time.Now().Format("January 2006"),
+				Data:       monthData,
+				XAxisLabel: "Day",
+				TempUnit:   tempUnit,
+			}
 
-		var doc bytes.Buffer
-		tmpl.Execute(&doc, data2)
-		s := doc.String()
-		fmt.Println(s)
+			buf := new(bytes.Buffer)
+			chartTmpl.Execute(buf, chart)
+			charts += buf.String()
+		}
 
+		// current year
+		yearData := db.GetDataForYear(dbPath, deviceId, time.Now())
+		if len(yearData) > 0 {
+			chart := Chart{
+				Title:      time.Now().Format("2006"),
+				Data:       yearData,
+				XAxisLabel: "Month",
+				TempUnit:   tempUnit,
+			}
+
+			buf := new(bytes.Buffer)
+			chartTmpl.Execute(buf, chart)
+			charts += buf.String()
+		}
+
+		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
+		baseTmpl.Execute(os.Stdout, charts)
 	},
 }
 

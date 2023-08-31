@@ -1,3 +1,6 @@
 apiKey:
 integratorToken:
 email:
+
+# for reports, C or F
+temperatureUnit:

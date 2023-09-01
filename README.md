@@ -111,6 +111,7 @@ WantedBy=multi-user.target
 ## Reports
 
 Prerequisites:
+
 * Populate `temperatureUnit` in your  `$HOME/.daikin/daikin.yaml` file.
 * Ensure sufficient data has been logged via the `log` command.
 
@@ -137,6 +138,10 @@ daikin-one report day 2023-08-19 -d <device-id> > report_day.html
 daikin-one report month 2023-08 -d <device-id> > report_month.html
 daikin-one report year 2023 -d <device-id> > report_year.html
 ```
+
+## Limitations
+
+* When using a Daikin FIT heat pump, the thermostat only registers the unit as running when in high demand mode. When it is running on low, the thermostat registers the unit as off. As a result, reports don't provide a full picture of run time. Tested with heat pump model DZ6VSA3010A, may or may not apply to other units.
 
 ## License
 

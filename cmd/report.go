@@ -22,17 +22,17 @@ var reportSummaryCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Short: "Generates summary report",
 	Run: func(cmd *cobra.Command, args []string) {
-		tempUnit := viper.GetString("temperatureUnit")
 		chartsString := ""
+		temperatureUnit := viper.GetString("temperatureUnit")
 
 		// last 7 days
 		for i := 0; i <= 6; i++ {
 			date := time.Now().Add(time.Duration(-i*24) * time.Hour)
-			chartsString += charts.GetChartForDay(dbPath, deviceId, date, tempUnit)
+			chartsString += charts.GetChartForDay(dbPath, deviceId, date, temperatureUnit)
 		}
 
-		chartsString += charts.GetChartForMonth(dbPath, deviceId, time.Now(), tempUnit)
-		chartsString += charts.GetChartForYear(dbPath, deviceId, time.Now(), tempUnit)
+		chartsString += charts.GetChartForMonth(dbPath, deviceId, time.Now(), temperatureUnit)
+		chartsString += charts.GetChartForYear(dbPath, deviceId, time.Now(), temperatureUnit)
 
 		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
 		baseTmpl.Execute(os.Stdout, chartsString)

@@ -22,20 +22,71 @@ var reportSummaryCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Short: "Generates summary report",
 	Run: func(cmd *cobra.Command, args []string) {
-		chartsString := ""
 		temperatureUnit := viper.GetString("temperatureUnit")
+		allCharts := ""
 
 		// last 7 days
 		for i := 0; i <= 6; i++ {
 			date := time.Now().Add(time.Duration(-i*24) * time.Hour)
-			chartsString += charts.GetChartForDay(dbPath, deviceId, date, temperatureUnit)
+			allCharts += charts.GetChartForDay(dbPath, deviceId, date, temperatureUnit)
 		}
 
-		chartsString += charts.GetChartForMonth(dbPath, deviceId, time.Now(), temperatureUnit)
-		chartsString += charts.GetChartForYear(dbPath, deviceId, time.Now(), temperatureUnit)
+		allCharts += charts.GetChartForMonth(dbPath, deviceId, time.Now(), temperatureUnit)
+		allCharts += charts.GetChartForYear(dbPath, deviceId, time.Now(), temperatureUnit)
 
 		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
-		baseTmpl.Execute(os.Stdout, chartsString)
+		baseTmpl.Execute(os.Stdout, allCharts)
+	},
+}
+
+var reportDayCmd = &cobra.Command{
+	Use:   "day",
+	Args:  cobra.ExactArgs(1),
+	Short: "Generates report for given day",
+	Run: func(cmd *cobra.Command, args []string) {
+		date, err := time.Parse("2006-01-02", args[0])
+		cobra.CheckErr(err)
+
+		temperatureUnit := viper.GetString("temperatureUnit")
+
+		chart := charts.GetChartForDay(dbPath, deviceId, date, temperatureUnit)
+
+		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
+		baseTmpl.Execute(os.Stdout, chart)
+	},
+}
+
+var reportMonthCmd = &cobra.Command{
+	Use:   "month",
+	Args:  cobra.ExactArgs(1),
+	Short: "Generates report for given month",
+	Run: func(cmd *cobra.Command, args []string) {
+		date, err := time.Parse("2006-01", args[0])
+		cobra.CheckErr(err)
+
+		temperatureUnit := viper.GetString("temperatureUnit")
+
+		chart := charts.GetChartForMonth(dbPath, deviceId, date, temperatureUnit)
+
+		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
+		baseTmpl.Execute(os.Stdout, chart)
+	},
+}
+
+var reportYearCmd = &cobra.Command{
+	Use:   "year",
+	Args:  cobra.ExactArgs(1),
+	Short: "Generates report for given year",
+	Run: func(cmd *cobra.Command, args []string) {
+		date, err := time.Parse("2006", args[0])
+		cobra.CheckErr(err)
+
+		temperatureUnit := viper.GetString("temperatureUnit")
+
+		chart := charts.GetChartForYear(dbPath, deviceId, date, temperatureUnit)
+
+		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
+		baseTmpl.Execute(os.Stdout, chart)
 	},
 }
 
@@ -50,4 +101,7 @@ func init() {
 	rootCmd.MarkPersistentFlagRequired("device-id")
 
 	reportCmd.AddCommand(reportSummaryCmd)
+	reportCmd.AddCommand(reportDayCmd)
+	reportCmd.AddCommand(reportMonthCmd)
+	reportCmd.AddCommand(reportYearCmd)
 }

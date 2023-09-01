@@ -6,9 +6,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/redgoose/daikin-one/daikin"
-	db "github.com/redgoose/daikin-one/internal"
 	"github.com/spf13/cobra"
+
+	"github.com/redgoose/daikin-one/daikin"
+	"github.com/redgoose/daikin-one/internal/db"
 )
 
 var logCmd = &cobra.Command{

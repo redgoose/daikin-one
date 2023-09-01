@@ -8,7 +8,7 @@ It is augmented with logging and reporting functionality to provide historical u
 
 ![Sample chart](docs/resources/chart.png)
 
-View a [sample report](https://htmlpreview.github.io/?https://github.com/redgoose/daikin-one/blob/master/docs/resources/sample_report.html)
+View a [sample report](https://redgoose.github.io/daikin-one/resources/sample_report.html)
 
 ## Quick Start
 

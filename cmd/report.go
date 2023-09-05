@@ -51,7 +51,12 @@ var reportDayCmd = &cobra.Command{
 
 		chart := charts.GetChartForDay(dbPath, deviceId, date, temperatureUnit)
 
-		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
+		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			panic(err)
+		}
+		baseTmpl := template.Must(template.ParseFiles(filepath.Join(folder, "templates", "base.tmpl")))
+
 		baseTmpl.Execute(os.Stdout, chart)
 	},
 }
@@ -68,7 +73,12 @@ var reportMonthCmd = &cobra.Command{
 
 		chart := charts.GetChartForMonth(dbPath, deviceId, date, temperatureUnit)
 
-		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
+		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			panic(err)
+		}
+		baseTmpl := template.Must(template.ParseFiles(filepath.Join(folder, "templates", "base.tmpl")))
+
 		baseTmpl.Execute(os.Stdout, chart)
 	},
 }
@@ -85,7 +95,12 @@ var reportYearCmd = &cobra.Command{
 
 		chart := charts.GetChartForYear(dbPath, deviceId, date, temperatureUnit)
 
-		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
+		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			panic(err)
+		}
+		baseTmpl := template.Must(template.ParseFiles(filepath.Join(folder, "templates", "base.tmpl")))
+
 		baseTmpl.Execute(os.Stdout, chart)
 	},
 }

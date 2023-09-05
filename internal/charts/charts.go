@@ -2,6 +2,8 @@ package charts
 
 import (
 	"bytes"
+	"os"
+	"path/filepath"
 	"text/template"
 	"time"
 
@@ -15,8 +17,6 @@ type Chart struct {
 	TemperatureUnit string
 }
 
-var chartTmpl = template.Must(template.ParseFiles("templates/chart.tmpl"))
-
 func GetChartForDay(dbPath string, deviceId string, date time.Time, temperatureUnit string) string {
 	output := ""
 	data := db.GetDataForDay(dbPath, deviceId, date)
@@ -28,6 +28,12 @@ func GetChartForDay(dbPath string, deviceId string, date time.Time, temperatureU
 			XAxisLabel:      "Hour",
 			TemperatureUnit: temperatureUnit,
 		}
+
+		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			panic(err)
+		}
+		var chartTmpl = template.Must(template.ParseFiles(filepath.Join(folder, "templates", "chart.tmpl")))
 
 		buf := new(bytes.Buffer)
 		chartTmpl.Execute(buf, chart)
@@ -49,6 +55,12 @@ func GetChartForMonth(dbPath string, deviceId string, date time.Time, temperatur
 			TemperatureUnit: temperatureUnit,
 		}
 
+		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			panic(err)
+		}
+		var chartTmpl = template.Must(template.ParseFiles(filepath.Join(folder, "templates", "chart.tmpl")))
+
 		buf := new(bytes.Buffer)
 		chartTmpl.Execute(buf, chart)
 		output = buf.String()
@@ -68,6 +80,12 @@ func GetChartForYear(dbPath string, deviceId string, date time.Time, temperature
 			XAxisLabel:      "Month",
 			TemperatureUnit: temperatureUnit,
 		}
+
+		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			panic(err)
+		}
+		var chartTmpl = template.Must(template.ParseFiles(filepath.Join(folder, "templates", "chart.tmpl")))
 
 		buf := new(bytes.Buffer)
 		chartTmpl.Execute(buf, chart)

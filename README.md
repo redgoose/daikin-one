@@ -2,9 +2,9 @@
 
 ## Overview
 
-Daikin One is a lightweight CLI wrapper for the [Daikin Open API](https://www.daikinone.com/openapi/index.html) to manage Daikin One devices/thermostats.
+Daikin One is a lightweight CLI wrapper for the [Daikin Open API](https://www.daikinone.com/openapi/index.html) to manage Daikin One+ devices/thermostats.
 
-It is augmented with logging and reporting functionality to provide historical usage insights which is missing from Daikin One devices.
+It is augmented with logging and reporting functionality to provide historical usage insights which is missing from Daikin One+ devices.
 
 ![Sample chart](docs/resources/chart.png)
 
@@ -141,7 +141,7 @@ daikin-one report year 2023 -d <device-id> > report_year.html
 
 ## Limitations
 
-* When using a Daikin FIT heat pump, the thermostat only registers the unit as running when in high demand mode. When it is running on low, the thermostat registers the unit as off. As a result, reports don't provide a full picture of run time. Tested with heat pump model DZ6VSA3010A, may or may not apply to other units.
+* When using a variable speed heat pump, the thermostat only registers the unit as running when in high demand mode. When it is running on low, the thermostat registers the unit as idle. As a result, reports don't provide a full picture of run time. Tested with heat pump model DZ6VSA3010A, may or may not apply to other units.
 
 ## License
 

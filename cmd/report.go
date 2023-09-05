@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"embed"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -10,6 +11,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+//go:embed templates/base.tmpl
+var baseFS embed.FS
+var baseTmpl *template.Template
 
 var reportCmd = &cobra.Command{
 	Use:   "report",
@@ -34,7 +39,6 @@ var reportSummaryCmd = &cobra.Command{
 		allCharts += charts.GetChartForMonth(dbPath, deviceId, time.Now(), temperatureUnit)
 		allCharts += charts.GetChartForYear(dbPath, deviceId, time.Now(), temperatureUnit)
 
-		baseTmpl := template.Must(template.ParseFiles("templates/base.tmpl"))
 		baseTmpl.Execute(os.Stdout, allCharts)
 	},
 }
@@ -50,13 +54,6 @@ var reportDayCmd = &cobra.Command{
 		temperatureUnit := viper.GetString("temperatureUnit")
 
 		chart := charts.GetChartForDay(dbPath, deviceId, date, temperatureUnit)
-
-		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			panic(err)
-		}
-		baseTmpl := template.Must(template.ParseFiles(filepath.Join(folder, "templates", "base.tmpl")))
-
 		baseTmpl.Execute(os.Stdout, chart)
 	},
 }
@@ -72,13 +69,6 @@ var reportMonthCmd = &cobra.Command{
 		temperatureUnit := viper.GetString("temperatureUnit")
 
 		chart := charts.GetChartForMonth(dbPath, deviceId, date, temperatureUnit)
-
-		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			panic(err)
-		}
-		baseTmpl := template.Must(template.ParseFiles(filepath.Join(folder, "templates", "base.tmpl")))
-
 		baseTmpl.Execute(os.Stdout, chart)
 	},
 }
@@ -94,13 +84,6 @@ var reportYearCmd = &cobra.Command{
 		temperatureUnit := viper.GetString("temperatureUnit")
 
 		chart := charts.GetChartForYear(dbPath, deviceId, date, temperatureUnit)
-
-		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			panic(err)
-		}
-		baseTmpl := template.Must(template.ParseFiles(filepath.Join(folder, "templates", "base.tmpl")))
-
 		baseTmpl.Execute(os.Stdout, chart)
 	},
 }
@@ -119,4 +102,9 @@ func init() {
 	reportCmd.AddCommand(reportDayCmd)
 	reportCmd.AddCommand(reportMonthCmd)
 	reportCmd.AddCommand(reportYearCmd)
+
+	baseTmpl, err = template.ParseFS(baseFS, "templates/base.tmpl")
+	if err != nil {
+		panic(err)
+	}
 }

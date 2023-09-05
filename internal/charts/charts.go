@@ -2,9 +2,8 @@ package charts
 
 import (
 	"bytes"
-	"os"
-	"path/filepath"
-	"text/template"
+	"embed"
+	"html/template"
 	"time"
 
 	"github.com/redgoose/daikin-one/internal/db"
@@ -17,6 +16,10 @@ type Chart struct {
 	TemperatureUnit string
 }
 
+//go:embed templates/chart.tmpl
+var chartFS embed.FS
+var chartTmpl *template.Template
+
 func GetChartForDay(dbPath string, deviceId string, date time.Time, temperatureUnit string) string {
 	output := ""
 	data := db.GetDataForDay(dbPath, deviceId, date)
@@ -28,12 +31,6 @@ func GetChartForDay(dbPath string, deviceId string, date time.Time, temperatureU
 			XAxisLabel:      "Hour",
 			TemperatureUnit: temperatureUnit,
 		}
-
-		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			panic(err)
-		}
-		var chartTmpl = template.Must(template.ParseFiles(filepath.Join(folder, "templates", "chart.tmpl")))
 
 		buf := new(bytes.Buffer)
 		chartTmpl.Execute(buf, chart)
@@ -55,12 +52,6 @@ func GetChartForMonth(dbPath string, deviceId string, date time.Time, temperatur
 			TemperatureUnit: temperatureUnit,
 		}
 
-		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			panic(err)
-		}
-		var chartTmpl = template.Must(template.ParseFiles(filepath.Join(folder, "templates", "chart.tmpl")))
-
 		buf := new(bytes.Buffer)
 		chartTmpl.Execute(buf, chart)
 		output = buf.String()
@@ -81,16 +72,18 @@ func GetChartForYear(dbPath string, deviceId string, date time.Time, temperature
 			TemperatureUnit: temperatureUnit,
 		}
 
-		folder, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			panic(err)
-		}
-		var chartTmpl = template.Must(template.ParseFiles(filepath.Join(folder, "templates", "chart.tmpl")))
-
 		buf := new(bytes.Buffer)
 		chartTmpl.Execute(buf, chart)
 		output = buf.String()
 	}
 
 	return output
+}
+
+func init() {
+	var err error
+	chartTmpl, err = template.ParseFS(chartFS, "templates/chart.tmpl")
+	if err != nil {
+		panic(err)
+	}
 }

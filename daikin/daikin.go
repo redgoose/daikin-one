@@ -36,7 +36,7 @@ type DeviceInfo struct {
 	EquipmentStatus        int     `json:"equipmentStatus"`
 	HumOutdoor             int     `json:"humOutdoor"`
 	TempIndoor             float32 `json:"tempIndoor"`
-	SetpointDelta          int     `json:"setpointDelta"`
+	SetpointDelta          float32 `json:"setpointDelta"`
 	EquipmentCommunication int     `json:"equipmentCommunication"`
 	ModeEmHeatAvailable    bool    `json:"modeEmHeatAvailable"`
 	GeofencingEnabled      bool    `json:"geofencingEnabled"`

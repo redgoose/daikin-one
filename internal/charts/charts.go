@@ -2,11 +2,11 @@ package charts
 
 import (
 	"bytes"
-	"embed"
 	"html/template"
 	"time"
 
 	"github.com/redgoose/daikin-one/internal/db"
+	"github.com/redgoose/daikin-one/templates"
 )
 
 type Chart struct {
@@ -16,8 +16,6 @@ type Chart struct {
 	TemperatureUnit string
 }
 
-//go:embed templates/chart.tmpl
-var chartFS embed.FS
 var chartTmpl *template.Template
 
 func GetChartForDay(dbPath string, deviceId string, date time.Time, temperatureUnit string) string {
@@ -82,7 +80,7 @@ func GetChartForYear(dbPath string, deviceId string, date time.Time, temperature
 
 func init() {
 	var err error
-	chartTmpl, err = template.ParseFS(chartFS, "templates/chart.tmpl")
+	chartTmpl, err = template.ParseFS(templates.TemplatesFS, "tmpl/chart.tmpl")
 	if err != nil {
 		panic(err)
 	}

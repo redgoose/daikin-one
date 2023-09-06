@@ -1,19 +1,17 @@
 package cmd
 
 import (
-	"embed"
 	"os"
 	"path/filepath"
 	"text/template"
 	"time"
 
 	"github.com/redgoose/daikin-one/internal/charts"
+	"github.com/redgoose/daikin-one/templates"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-//go:embed templates/base.tmpl
-var baseFS embed.FS
 var baseTmpl *template.Template
 
 var reportCmd = &cobra.Command{
@@ -103,7 +101,7 @@ func init() {
 	reportCmd.AddCommand(reportMonthCmd)
 	reportCmd.AddCommand(reportYearCmd)
 
-	baseTmpl, err = template.ParseFS(baseFS, "templates/base.tmpl")
+	baseTmpl, err = template.ParseFS(templates.TemplatesFS, "tmpl/base.tmpl")
 	if err != nil {
 		panic(err)
 	}

@@ -87,19 +87,19 @@ var reportYearCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(reportCmd)
-
 	home, err := os.UserHomeDir()
 	cobra.CheckErr(err)
 
-	rootCmd.PersistentFlags().StringVarP(&deviceId, "device-id", "d", "", "Daikin device ID")
-	rootCmd.PersistentFlags().StringVarP(&dbPath, "db", "", filepath.Join(home, ".daikin", "daikin.db"), "Local path to SQLite database")
-	rootCmd.MarkPersistentFlagRequired("device-id")
+	reportCmd.PersistentFlags().StringVarP(&deviceId, "device-id", "d", "", "Daikin device ID")
+	reportCmd.PersistentFlags().StringVarP(&dbPath, "db", "", filepath.Join(home, ".daikin", "daikin.db"), "Local path to SQLite database")
+	reportCmd.MarkPersistentFlagRequired("device-id")
 
 	reportCmd.AddCommand(reportSummaryCmd)
 	reportCmd.AddCommand(reportDayCmd)
 	reportCmd.AddCommand(reportMonthCmd)
 	reportCmd.AddCommand(reportYearCmd)
+
+	rootCmd.AddCommand(reportCmd)
 
 	baseTmpl, err = template.ParseFS(templates.TemplatesFS, "tmpl/base.tmpl")
 	if err != nil {

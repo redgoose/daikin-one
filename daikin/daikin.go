@@ -104,7 +104,7 @@ func (d *Daikin) getToken() (string, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("token request returned non-success response: %s", res.Status)
+		return "", fmt.Errorf("token request returned a non-success response: %s", res.Status)
 	}
 
 	token := &Token{}
@@ -127,7 +127,7 @@ func (d *Daikin) ListDevices() (*Locations, error) {
 
 	token, err := d.getToken()
 	if err != nil {
-		return nil, errors.New("getToken did not return token")
+		return nil, errors.New("getToken did not return a token")
 	}
 
 	r.Header.Add("Authorization", "Bearer "+token)
@@ -140,7 +140,7 @@ func (d *Daikin) ListDevices() (*Locations, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("list devices request returned non-success response: %s", res.Status)
+		return nil, fmt.Errorf("list devices request returned a non-success response: %s", res.Status)
 	}
 
 	var locations Locations
@@ -163,7 +163,7 @@ func (d *Daikin) GetDeviceInfo(deviceId string) (*DeviceInfo, error) {
 
 	token, err := d.getToken()
 	if err != nil {
-		return nil, errors.New("getToken did not return token")
+		return nil, errors.New("getToken did not return a token")
 	}
 
 	r.Header.Add("Authorization", "Bearer "+token)
@@ -176,7 +176,7 @@ func (d *Daikin) GetDeviceInfo(deviceId string) (*DeviceInfo, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("get device info request returned non-success response: %s", res.Status)
+		return nil, fmt.Errorf("get device info request returned a non-success response: %s", res.Status)
 	}
 
 	var deviceInfo DeviceInfo
@@ -205,7 +205,7 @@ func (d *Daikin) UpdateModeSetpoint(deviceId string, options ModeSetpointOptions
 
 	token, err := d.getToken()
 	if err != nil {
-		return errors.New("getToken did not return token")
+		return errors.New("getToken did not return a token")
 	}
 
 	r.Header.Add("Authorization", "Bearer "+token)
@@ -218,7 +218,7 @@ func (d *Daikin) UpdateModeSetpoint(deviceId string, options ModeSetpointOptions
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("update mode setpoint request returned non-success response: %s", res.Status)
+		return fmt.Errorf("update mode setpoint request returned a non-success response: %s", res.Status)
 	}
 
 	return nil

@@ -5,14 +5,7 @@ import (
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
-)
-
-const (
-	EquipmentStatusCool     = 1
-	EquipmentStatusOvercool = 2
-	EquipmentStatusHeat     = 3
-	EquipmentStatusFan      = 4
-	EquipmentStatusIdle     = 5
+	"github.com/redgoose/daikin-one/daikin"
 )
 
 type DeviceData struct {
@@ -83,7 +76,7 @@ func GetDataForDay(dbPath string, deviceId string, day time.Time) []PeriodData {
 		where substr(timestamp, 0, 11) = ?
 		and device_id = ?
 		group by substr(timestamp, 0, 14);
-	`, EquipmentStatusCool, EquipmentStatusOvercool, EquipmentStatusHeat, day.Format("2006-01-02"), deviceId)
+	`, daikin.EquipmentStatusCool, daikin.EquipmentStatusOvercool, daikin.EquipmentStatusHeat, day.Format("2006-01-02"), deviceId)
 	checkErr(err)
 
 	defer rows.Close()
@@ -136,7 +129,7 @@ func GetDataForMonth(dbPath string, deviceId string, day time.Time) []PeriodData
 		where  substr(timestamp, 0, 8) = ?
 		and device_id = ?
 		group by substr(timestamp, 0, 11);
-	`, EquipmentStatusCool, EquipmentStatusOvercool, EquipmentStatusHeat, day.Format("2006-01"), deviceId)
+	`, daikin.EquipmentStatusCool, daikin.EquipmentStatusOvercool, daikin.EquipmentStatusHeat, day.Format("2006-01"), deviceId)
 	checkErr(err)
 
 	defer rows.Close()
@@ -189,7 +182,7 @@ func GetDataForYear(dbPath string, deviceId string, day time.Time) []PeriodData 
 		where  substr(timestamp, 0, 5) = ?
 		and device_id = ?
 		group by substr(timestamp, 0, 8);
-	`, EquipmentStatusCool, EquipmentStatusOvercool, EquipmentStatusHeat, day.Format("2006"), deviceId)
+	`, daikin.EquipmentStatusCool, daikin.EquipmentStatusOvercool, daikin.EquipmentStatusHeat, day.Format("2006"), deviceId)
 	checkErr(err)
 
 	defer rows.Close()

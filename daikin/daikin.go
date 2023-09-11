@@ -62,6 +62,14 @@ type ModeSetpointOptions struct {
 	CoolSetpoint float32 `json:"coolSetpoint"`
 }
 
+const (
+	EquipmentStatusCool     = 1
+	EquipmentStatusOvercool = 2
+	EquipmentStatusHeat     = 3
+	EquipmentStatusFan      = 4
+	EquipmentStatusIdle     = 5
+)
+
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 var urlBase string = "https://integrator-api.daikinskyport.com"
 

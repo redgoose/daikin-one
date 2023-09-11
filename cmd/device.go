@@ -6,6 +6,7 @@ import (
 
 	"github.com/redgoose/daikin-one/daikin"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var deviceMode int
@@ -23,7 +24,9 @@ var infoCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Short: "Retrieves device configuration and state values",
 	Run: func(cmd *cobra.Command, args []string) {
-		var info = daikin.GetDeviceInfo(deviceId)
+		d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
+		var info = d.GetDeviceInfo(deviceId)
+
 		s, _ := json.MarshalIndent(info, "", "\t")
 		fmt.Println(string(s))
 	},
@@ -34,7 +37,9 @@ var lsCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Short: "Lists devices associated with your account",
 	Run: func(cmd *cobra.Command, args []string) {
-		var locations = daikin.ListDevices()
+		d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
+		var locations = d.ListDevices()
+
 		s, _ := json.MarshalIndent(locations, "", "\t")
 		fmt.Println(string(s))
 	},
@@ -45,12 +50,13 @@ var modeSetpointCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Short: "Update device operating mode and heat/cool setpoints",
 	Run: func(cmd *cobra.Command, args []string) {
-		var deviceOptions = daikin.DeviceOptions{
+		d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
+		var options = daikin.ModeSetpointOptions{
 			Mode:         deviceMode,
 			HeatSetpoint: deviceHeatSetpoint,
 			CoolSetpoint: deviceCoolSetpoint,
 		}
-		daikin.UpdateDevice(deviceId, deviceOptions)
+		d.UpdateModeSetpoint(deviceId, options)
 	},
 }
 

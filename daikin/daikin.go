@@ -5,9 +5,13 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
-
-	"github.com/spf13/viper"
 )
+
+type Daikin struct {
+	ApiKey          string
+	IntegratorToken string
+	Email           string
+}
 
 type Token struct {
 	AccessToken          string `json:"accessToken"`
@@ -50,7 +54,7 @@ type DeviceInfo struct {
 	SetpointMaximum        float32 `json:"setpointMaximum"`
 }
 
-type DeviceOptions struct {
+type ModeSetpointOptions struct {
 	Mode         int     `json:"mode"`
 	HeatSetpoint float32 `json:"heatSetpoint"`
 	CoolSetpoint float32 `json:"coolSetpoint"`
@@ -59,10 +63,19 @@ type DeviceOptions struct {
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 var urlBase string = "https://integrator-api.daikinskyport.com"
 
-func GetToken() string {
+func New(apiKey string, integratorToken string, email string) *Daikin {
+	d := &Daikin{
+		ApiKey:          apiKey,
+		IntegratorToken: integratorToken,
+		Email:           email,
+	}
+	return d
+}
+
+func (d *Daikin) getToken() string {
 	body := []byte(`{
-		"email": "` + viper.GetString("email") + `",
-		"integratorToken": "` + viper.GetString("integratorToken") + `"
+		"email": "` + d.Email + `",
+		"integratorToken": "` + d.IntegratorToken + `"
 	}`)
 
 	r, err := http.NewRequest("POST", urlBase+"/v1/token", bytes.NewBuffer(body))
@@ -71,7 +84,7 @@ func GetToken() string {
 	}
 
 	r.Header.Add("content-type", "application/json")
-	r.Header.Add("x-api-key", viper.GetString("apiKey"))
+	r.Header.Add("x-api-key", d.ApiKey)
 
 	res, err := httpClient.Do(r)
 	if err != nil {
@@ -93,15 +106,15 @@ func GetToken() string {
 	return token.AccessToken
 }
 
-func ListDevices() Locations {
+func (d *Daikin) ListDevices() Locations {
 	r, err := http.NewRequest("GET", urlBase+"/v1/devices", nil)
 	if err != nil {
 		panic(err)
 	}
 
 	r.Header.Add("content-type", "application/json")
-	r.Header.Add("x-api-key", viper.GetString("apiKey"))
-	r.Header.Add("Authorization", "Bearer "+GetToken())
+	r.Header.Add("x-api-key", d.ApiKey)
+	r.Header.Add("Authorization", "Bearer "+d.getToken())
 
 	res, err := httpClient.Do(r)
 	if err != nil {
@@ -123,15 +136,15 @@ func ListDevices() Locations {
 	return locations
 }
 
-func GetDeviceInfo(deviceId string) DeviceInfo {
+func (d *Daikin) GetDeviceInfo(deviceId string) DeviceInfo {
 	r, err := http.NewRequest("GET", urlBase+"/v1/devices/"+deviceId, nil)
 	if err != nil {
 		panic(err)
 	}
 
 	r.Header.Add("content-type", "application/json")
-	r.Header.Add("x-api-key", viper.GetString("apiKey"))
-	r.Header.Add("Authorization", "Bearer "+GetToken())
+	r.Header.Add("x-api-key", d.ApiKey)
+	r.Header.Add("Authorization", "Bearer "+d.getToken())
 
 	res, err := httpClient.Do(r)
 	if err != nil {
@@ -153,9 +166,9 @@ func GetDeviceInfo(deviceId string) DeviceInfo {
 	return deviceInfo
 }
 
-func UpdateDevice(deviceId string, deviceOptions DeviceOptions) {
+func (d *Daikin) UpdateModeSetpoint(deviceId string, options ModeSetpointOptions) {
 
-	body, err := json.Marshal(deviceOptions)
+	body, err := json.Marshal(options)
 	if err != nil {
 		panic(err)
 	}
@@ -166,8 +179,8 @@ func UpdateDevice(deviceId string, deviceOptions DeviceOptions) {
 	}
 
 	r.Header.Add("content-type", "application/json")
-	r.Header.Add("x-api-key", viper.GetString("apiKey"))
-	r.Header.Add("Authorization", "Bearer "+GetToken())
+	r.Header.Add("x-api-key", d.ApiKey)
+	r.Header.Add("Authorization", "Bearer "+d.getToken())
 
 	res, err := httpClient.Do(r)
 	if err != nil {

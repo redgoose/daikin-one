@@ -66,12 +66,12 @@ var httpClient = &http.Client{Timeout: 10 * time.Second}
 var urlBase string = "https://integrator-api.daikinskyport.com"
 
 func New(apiKey string, integratorToken string, email string) *Daikin {
-	d := &Daikin{
+	d := Daikin{
 		ApiKey:          apiKey,
 		IntegratorToken: integratorToken,
 		Email:           email,
 	}
-	return d
+	return &d
 }
 
 func (d *Daikin) getToken() (string, error) {

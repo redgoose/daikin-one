@@ -113,7 +113,7 @@ WantedBy=multi-user.target
 Prerequisites:
 
 * Populate `temperatureUnit` in your  `$HOME/.daikin/daikin.yaml` file.
-* Ensure sufficient data has been logged via the `log` command.
+* Ensure sufficient data has been logged via the `daikin-one log` command.
 
 ### Report Summary
 

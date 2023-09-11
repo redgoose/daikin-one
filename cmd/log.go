@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/redgoose/daikin-one/daikin"
 	"github.com/redgoose/daikin-one/internal/db"
@@ -18,7 +19,11 @@ var logCmd = &cobra.Command{
 	Short: "Logs device data to local SQLite database",
 	Run: func(cmd *cobra.Command, args []string) {
 		for {
-			var deviceInfo = daikin.GetDeviceInfo(deviceId)
+			d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
+			deviceInfo, err := d.GetDeviceInfo(deviceId)
+			if err != nil {
+				panic(err)
+			}
 
 			var data = db.DeviceData{
 				DeviceId:        deviceId,

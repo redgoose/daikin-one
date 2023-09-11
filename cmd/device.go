@@ -25,7 +25,10 @@ var infoCmd = &cobra.Command{
 	Short: "Retrieves device configuration and state values",
 	Run: func(cmd *cobra.Command, args []string) {
 		d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
-		var info = d.GetDeviceInfo(deviceId)
+		info, err := d.GetDeviceInfo(deviceId)
+		if err != nil {
+			panic(err)
+		}
 
 		s, _ := json.MarshalIndent(info, "", "\t")
 		fmt.Println(string(s))
@@ -38,7 +41,10 @@ var lsCmd = &cobra.Command{
 	Short: "Lists devices associated with your account",
 	Run: func(cmd *cobra.Command, args []string) {
 		d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
-		var locations = d.ListDevices()
+		locations, err := d.ListDevices()
+		if err != nil {
+			panic(err)
+		}
 
 		s, _ := json.MarshalIndent(locations, "", "\t")
 		fmt.Println(string(s))
@@ -56,7 +62,10 @@ var modeSetpointCmd = &cobra.Command{
 			HeatSetpoint: deviceHeatSetpoint,
 			CoolSetpoint: deviceCoolSetpoint,
 		}
-		d.UpdateModeSetpoint(deviceId, options)
+		err := d.UpdateModeSetpoint(deviceId, options)
+		if err != nil {
+			panic(err)
+		}
 	},
 }
 

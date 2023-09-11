@@ -3,6 +3,8 @@ package daikin
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -72,7 +74,7 @@ func New(apiKey string, integratorToken string, email string) *Daikin {
 	return d
 }
 
-func (d *Daikin) getToken() string {
+func (d *Daikin) getToken() (string, error) {
 	body := []byte(`{
 		"email": "` + d.Email + `",
 		"integratorToken": "` + d.IntegratorToken + `"
@@ -80,7 +82,7 @@ func (d *Daikin) getToken() string {
 
 	r, err := http.NewRequest("POST", urlBase+"/v1/token", bytes.NewBuffer(body))
 	if err != nil {
-		panic(err)
+		return "", errors.New("http.NewRequest failed")
 	}
 
 	r.Header.Add("content-type", "application/json")
@@ -88,108 +90,128 @@ func (d *Daikin) getToken() string {
 
 	res, err := httpClient.Do(r)
 	if err != nil {
-		panic(err)
+		return "", errors.New("http request failed")
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		panic(res.Status)
+		return "", fmt.Errorf("token request returned non-success response: %s", res.Status)
 	}
 
 	token := &Token{}
 	derr := json.NewDecoder(res.Body).Decode(token)
 	if derr != nil {
-		panic(derr)
+		return "", errors.New("json decode failed")
 	}
 
-	return token.AccessToken
+	return token.AccessToken, nil
 }
 
-func (d *Daikin) ListDevices() Locations {
+func (d *Daikin) ListDevices() (*Locations, error) {
 	r, err := http.NewRequest("GET", urlBase+"/v1/devices", nil)
 	if err != nil {
-		panic(err)
+		return nil, errors.New("http.NewRequest failed")
 	}
 
 	r.Header.Add("content-type", "application/json")
 	r.Header.Add("x-api-key", d.ApiKey)
-	r.Header.Add("Authorization", "Bearer "+d.getToken())
+
+	token, err := d.getToken()
+	if err != nil {
+		return nil, errors.New("getToken did not return token")
+	}
+
+	r.Header.Add("Authorization", "Bearer "+token)
 
 	res, err := httpClient.Do(r)
 	if err != nil {
-		panic(err)
+		return nil, errors.New("http request failed")
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		panic(res.Status)
+		return nil, fmt.Errorf("list devices request returned non-success response: %s", res.Status)
 	}
 
 	var locations Locations
 	derr := json.NewDecoder(res.Body).Decode(&locations)
 	if derr != nil {
-		panic(derr)
+		return nil, errors.New("json decode failed")
 	}
 
-	return locations
+	return &locations, nil
 }
 
-func (d *Daikin) GetDeviceInfo(deviceId string) DeviceInfo {
+func (d *Daikin) GetDeviceInfo(deviceId string) (*DeviceInfo, error) {
 	r, err := http.NewRequest("GET", urlBase+"/v1/devices/"+deviceId, nil)
 	if err != nil {
-		panic(err)
+		return nil, errors.New("http.NewRequest failed")
 	}
 
 	r.Header.Add("content-type", "application/json")
 	r.Header.Add("x-api-key", d.ApiKey)
-	r.Header.Add("Authorization", "Bearer "+d.getToken())
+
+	token, err := d.getToken()
+	if err != nil {
+		return nil, errors.New("getToken did not return token")
+	}
+
+	r.Header.Add("Authorization", "Bearer "+token)
 
 	res, err := httpClient.Do(r)
 	if err != nil {
-		panic(err)
+		return nil, errors.New("http request failed")
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		panic(res.Status)
+		return nil, fmt.Errorf("get device info request returned non-success response: %s", res.Status)
 	}
 
 	var deviceInfo DeviceInfo
 	derr := json.NewDecoder(res.Body).Decode(&deviceInfo)
 	if derr != nil {
-		panic(derr)
+		return nil, errors.New("json decode failed")
 	}
 
-	return deviceInfo
+	return &deviceInfo, nil
 }
 
-func (d *Daikin) UpdateModeSetpoint(deviceId string, options ModeSetpointOptions) {
+func (d *Daikin) UpdateModeSetpoint(deviceId string, options ModeSetpointOptions) error {
 
 	body, err := json.Marshal(options)
 	if err != nil {
-		panic(err)
+		return errors.New("json.Marshal failed")
 	}
 
 	r, err := http.NewRequest("PUT", urlBase+"/v1/devices/"+deviceId+"/msp", bytes.NewBuffer([]byte(body)))
 	if err != nil {
-		panic(err)
+		return errors.New("http.NewRequest failed")
 	}
 
 	r.Header.Add("content-type", "application/json")
 	r.Header.Add("x-api-key", d.ApiKey)
-	r.Header.Add("Authorization", "Bearer "+d.getToken())
+
+	token, err := d.getToken()
+	if err != nil {
+		return errors.New("getToken did not return token")
+	}
+
+	r.Header.Add("Authorization", "Bearer "+token)
 
 	res, err := httpClient.Do(r)
 	if err != nil {
-		panic(err)
+		return errors.New("http request failed")
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		panic(res.Status)
+		return fmt.Errorf("update mode setpoint request returned non-success response: %s", res.Status)
 	}
+
+	return nil
 }

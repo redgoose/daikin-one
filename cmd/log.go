@@ -20,7 +20,10 @@ var logCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		for {
 			d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
-			var deviceInfo = d.GetDeviceInfo(deviceId)
+			deviceInfo, err := d.GetDeviceInfo(deviceId)
+			if err != nil {
+				panic(err)
+			}
 
 			var data = db.DeviceData{
 				DeviceId:        deviceId,

@@ -21,8 +21,11 @@ var logCmd = &cobra.Command{
 		for {
 			d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
 			deviceInfo, err := d.GetDeviceInfo(deviceId)
+
 			if err != nil {
-				panic(err)
+				fmt.Println(time.Now().Format(time.RFC3339) + " - Error: " + err.Error())
+				time.Sleep(5 * time.Minute)
+				continue
 			}
 
 			var data = db.DeviceData{

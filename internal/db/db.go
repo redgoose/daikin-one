@@ -5,7 +5,7 @@ import (
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/redgoose/daikin-one/daikin"
+	"github.com/redgoose/daikin-skyport"
 )
 
 type DeviceData struct {

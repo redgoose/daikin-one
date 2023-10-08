@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/redgoose/daikin-one/daikin"
 	"github.com/redgoose/daikin-one/internal/db"
+	"github.com/redgoose/daikin-skyport"
 )
 
 var logCmd = &cobra.Command{
@@ -19,7 +19,7 @@ var logCmd = &cobra.Command{
 	Short: "Logs device data to local SQLite database",
 	Run: func(cmd *cobra.Command, args []string) {
 		for {
-			d := daikin.New(viper.GetString("apiKey"), viper.GetString("integratorToken"), viper.GetString("email"))
+			d := daikin.New(viper.GetString("email"), viper.GetString("password"))
 			deviceInfo, err := d.GetDeviceInfo(deviceId)
 
 			if err != nil {
@@ -34,9 +34,9 @@ var logCmd = &cobra.Command{
 				TempOutdoor:     deviceInfo.TempOutdoor,
 				HumidityIndoor:  deviceInfo.HumIndoor,
 				HumidityOutdoor: deviceInfo.HumOutdoor,
-				CoolSetpoint:    deviceInfo.CoolSetpoint,
-				HeatSetpoint:    deviceInfo.HeatSetpoint,
-				EquipmentStatus: deviceInfo.EquipmentStatus,
+				CoolSetpoint:    deviceInfo.CspHome,
+				HeatSetpoint:    deviceInfo.HspHome,
+				EquipmentStatus: int(deviceInfo.EquipmentStatus),
 			}
 
 			db.LogData(dbPath, data)

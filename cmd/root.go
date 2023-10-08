@@ -39,7 +39,7 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
-		configValues := []string{"integratorToken", "apiKey", "email"}
+		configValues := []string{"email", "password"}
 		for _, configValue := range configValues {
 			if viper.GetString(configValue) == "" {
 				cobra.CheckErr(fmt.Errorf("%s not defined in config", configValue))

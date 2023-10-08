@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/mattn/go-sqlite3 v1.14.17
+	github.com/redgoose/daikin-skyport v0.0.0-20231005152522-79eb520cc4eb
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 )

@@ -18,32 +18,26 @@ var logCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Short: "Logs device data to local SQLite database",
 	Run: func(cmd *cobra.Command, args []string) {
-		for {
-			d := daikin.New(viper.GetString("email"), viper.GetString("password"))
-			deviceInfo, err := d.GetDeviceInfo(deviceId)
+		d := daikin.New(viper.GetString("email"), viper.GetString("password"))
+		deviceInfo, err := d.GetDeviceInfo(deviceId)
 
-			if err != nil {
-				fmt.Println(time.Now().Format(time.RFC3339) + " - Error: " + err.Error())
-				time.Sleep(5 * time.Minute)
-				continue
-			}
-
-			var data = db.DeviceData{
-				DeviceId:        deviceId,
-				TempIndoor:      deviceInfo.TempIndoor,
-				TempOutdoor:     deviceInfo.TempOutdoor,
-				HumidityIndoor:  deviceInfo.HumIndoor,
-				HumidityOutdoor: deviceInfo.HumOutdoor,
-				CoolSetpoint:    deviceInfo.CspHome,
-				HeatSetpoint:    deviceInfo.HspHome,
-				EquipmentStatus: int(deviceInfo.EquipmentStatus),
-			}
-
-			db.LogData(dbPath, data)
-			fmt.Println(time.Now().Format(time.RFC3339) + " - Logged data")
-
-			time.Sleep(5 * time.Minute)
+		if err != nil {
+			panic(err)
 		}
+
+		var data = db.DeviceData{
+			DeviceId:        deviceId,
+			TempIndoor:      deviceInfo.TempIndoor,
+			TempOutdoor:     deviceInfo.TempOutdoor,
+			HumidityIndoor:  deviceInfo.HumIndoor,
+			HumidityOutdoor: deviceInfo.HumOutdoor,
+			CoolSetpoint:    deviceInfo.CspHome,
+			HeatSetpoint:    deviceInfo.HspHome,
+			EquipmentStatus: int(deviceInfo.EquipmentStatus),
+		}
+
+		db.LogData(dbPath, data)
+		fmt.Println(time.Now().Format(time.RFC3339) + " - Logged data")
 	},
 }
 

@@ -81,27 +81,12 @@ Run `daikin-one -h` and `daikin-one device -h` for a full list of available comm
 ## Logging
 
 1. Copy `config/daikin.db` to `.daikin/daikin.db` in your home directory.
-2. Run the following to start logging:
+2. Run the following to log current device data:
 	```
 	daikin-one log -d <device-id>
 	```
 
-	This will log your device data to the local SQLite database every 5 minutes.
-
-Ideally you run this using your operating system's service manager. ie. Using Ubuntu's systemd, an example `daikin_one.service` file would look like:
-
-```ini
-[Unit]
-Description=daikin one
-
-[Service]
-User=foo
-Group=foo
-ExecStart=/home/foo/go/bin/daikin-one log -d <device-id>
-
-[Install]
-WantedBy=multi-user.target
-```
+This will log device data to the local SQLite database only once. Stick this into cron or an equivalent tool for continuous logging.
 
 ## Reports
 

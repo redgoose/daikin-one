@@ -86,7 +86,7 @@ Run `daikin-one -h` and `daikin-one device -h` for a full list of available comm
 	daikin-one log -d <device-id>
 	```
 
-This will log device data to the local SQLite database only once. Stick this into cron or an equivalent tool for continuous logging.
+This will log device data to the local SQLite database only once. Stick this into cron or an equivalent tool for continuous logging. It is recommended you set your logging interval to every 5 minutes.
 
 ## Reports
 
@@ -94,6 +94,7 @@ Prerequisites:
 
 * Populate `temperatureUnit` in your  `$HOME/.daikin/daikin.yaml` file.
 * Ensure sufficient data has been logged via the `daikin-one log` command.
+* **Logging interval must be set to every 5 minutes for accurate reports.**
 
 ### Report Summary
 

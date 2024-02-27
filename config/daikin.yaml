@@ -1,6 +1,5 @@
-apiKey:
-integratorToken:
 email:
+password:
 
 # for reports, C or F
 temperatureUnit:

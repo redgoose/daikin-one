@@ -1,8 +1,8 @@
 -- Add new fields:
-    -- OutdoorHeatDemand
-    -- OutdoorCoolDemand
-    -- IndoorFanActual
-    -- IndoorHeatActual
+-- OutdoorHeatDemand
+-- OutdoorCoolDemand
+-- IndoorFanActual
+-- IndoorHeatActual
 
 ALTER TABLE daikin
 ADD outdoor_heat REAL;

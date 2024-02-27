@@ -16,6 +16,13 @@ type Chart struct {
 	TemperatureUnit string
 }
 
+type ChartV2 struct {
+	Title           string
+	Data            []db.AnyData
+	XAxisLabel      string
+	TemperatureUnit string
+}
+
 var chartTmpl *template.Template
 
 // Convert PeriodData temperature fields from C to F
@@ -32,6 +39,43 @@ func convertTempsCtoF(periods []db.PeriodData) []db.PeriodData {
 		periods[i].HeatSetpoint = cToF(periods[i].HeatSetpoint)
 	}
 	return periods
+}
+
+// Convert PeriodData temperature fields from C to F
+func convertTempsCtoFv2(periods []db.AnyData) []db.AnyData {
+	cToF := func(c float32) float32 {
+		return c*9/5 + 32
+	}
+	for i := range periods {
+		periods[i].Data = cToF(periods[i].Data)
+	}
+	return periods
+}
+
+func GetChartForField(dbPath string, deviceId string, field string, date time.Time, temperatureUnit string) string {
+	output := ""
+
+	data := db.GetDataRaw(dbPath, deviceId, field)
+
+	// TODO: Not all data is temperature, need to maintain a map of data tpe to display type...
+	// if temperatureUnit == "F" {
+	// data = convertTempsCtoFv2(data)
+	// }
+
+	if len(data) > 0 {
+		chart := ChartV2{
+			Title:           date.Format("January 2 2006"),
+			Data:            data,
+			XAxisLabel:      "Hour",
+			TemperatureUnit: temperatureUnit,
+		}
+
+		buf := new(bytes.Buffer)
+		chartTmpl.Execute(buf, chart)
+		output = buf.String()
+	}
+
+	return output
 }
 
 func GetChartForDay(dbPath string, deviceId string, date time.Time, temperatureUnit string) string {

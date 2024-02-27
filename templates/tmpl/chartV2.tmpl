@@ -1,0 +1,62 @@
+<p style="color:#fff; text-align:center">{{.Title}}</p>
+<div id="{{.Title}}" style="height: 500px"></div>
+
+<script type="text/javascript">
+    var dom = document.getElementById('{{.Title}}');
+    var chart = echarts.init(dom, 'dark', {
+        renderer: 'canvas',
+        useDirtyRect: false
+    });
+    var colors = ['#3d8dad', '#d0b108', '#57b370', '#3d8dad', '#d46728', '#7540ad', '#ba339d'];
+    var option = {
+        color: colors,
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            }
+        },
+        grid: {
+            right: '20%'
+        },
+        legend: {
+            data: ['{{.Title}}]
+        },
+        xAxis: [
+            {
+                type: 'category',
+                name: '{{.XAxisLabel}}',
+                nameLocation: 'center',
+                nameGap: 30,
+                axisTick: {
+                    alignWithLabel: true
+                },
+                data: [{{ range .Data }}'{{ .Period }}', {{ end }}]
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: 'Run time',
+                position: 'left',
+                alignTicks: true,
+                axisLine: {
+                    show: true,
+                },
+                axisLabel: {
+                    formatter: '{value} min'
+                }
+            },
+        ],
+        series: [
+            {
+                name: '{{.Title}}',
+                type: 'bar',
+                data: [{{ range .Data }}{{ .RunTime }}, {{ end }}]
+            },
+        ]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', chart.resize);
+</script>

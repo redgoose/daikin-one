@@ -20,6 +20,36 @@ var reportCmd = &cobra.Command{
 	Short: "Generate reports",
 }
 
+var reportAllCmd = &cobra.Command{
+	Use:   "all",
+	Args:  cobra.NoArgs,
+	Short: "Generates report of all data, separating them one per graph",
+	Run: func(cmd *cobra.Command, args []string) {
+		temperatureUnit := viper.GetString("temperatureUnit")
+		allCharts := ""
+
+		fields := []string{
+			"temp_indoor",
+			"temp_outdoor",
+			"humidity_indoor",
+			"humidity_outdoor",
+			"cool_setpoint",
+			"heat_setpoint",
+			"equipment_status",
+			"outdoor_heat",
+			"outdoor_cool",
+			"indoor_fan",
+			"indoor_heat",
+		}
+
+		for _, field := range fields {
+			allCharts += charts.GetChartForField(dbPath, deviceId, field, time.Now(), temperatureUnit)
+		}
+
+		baseTmpl.Execute(os.Stdout, allCharts)
+	},
+}
+
 var reportSummaryCmd = &cobra.Command{
 	Use:   "summary",
 	Args:  cobra.NoArgs,
@@ -94,6 +124,7 @@ func init() {
 	reportCmd.PersistentFlags().StringVarP(&dbPath, "db", "", filepath.Join(home, ".daikin", "daikin.db"), "Local path to SQLite database")
 	reportCmd.MarkPersistentFlagRequired("device-id")
 
+	reportCmd.AddCommand(reportAllCmd)
 	reportCmd.AddCommand(reportSummaryCmd)
 	reportCmd.AddCommand(reportDayCmd)
 	reportCmd.AddCommand(reportMonthCmd)

@@ -17,13 +17,14 @@ type Chart struct {
 }
 
 type ChartV2 struct {
-	Title           string
-	Data            []db.AnyData
-	XAxisLabel      string
-	TemperatureUnit string
+	Title      string
+	PeriodData []db.AnyData
+	XAxisLabel string
+	YAxisUnit  string
 }
 
 var chartTmpl *template.Template
+var chartV2Tmpl *template.Template
 
 // Convert PeriodData temperature fields from C to F
 func convertTempsCtoF(periods []db.PeriodData) []db.PeriodData {
@@ -64,14 +65,17 @@ func GetChartForField(dbPath string, deviceId string, field string, date time.Ti
 
 	if len(data) > 0 {
 		chart := ChartV2{
-			Title:           date.Format("January 2 2006"),
-			Data:            data,
-			XAxisLabel:      "Hour",
-			TemperatureUnit: temperatureUnit,
+			Title:      field,
+			PeriodData: data,
+			XAxisLabel: "Time",
+			YAxisUnit:  "%",
 		}
 
 		buf := new(bytes.Buffer)
-		chartTmpl.Execute(buf, chart)
+		err := chartV2Tmpl.Execute(buf, chart)
+		if err != nil {
+			panic(err)
+		}
 		output = buf.String()
 	}
 
@@ -153,6 +157,7 @@ func GetChartForYear(dbPath string, deviceId string, date time.Time, temperature
 func init() {
 	var err error
 	chartTmpl, err = template.ParseFS(templates.TemplatesFS, "tmpl/chart.tmpl")
+	chartV2Tmpl, err = template.ParseFS(templates.TemplatesFS, "tmpl/chartV2.tmpl")
 	if err != nil {
 		panic(err)
 	}

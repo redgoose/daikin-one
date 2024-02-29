@@ -6,5 +6,8 @@
 <body style="height: 100%; margin: 0; background-color:#100C2A">
     <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     {{ . }}
+    <script type="text/javascript">
+        echarts.connect('ChartGroup1')
+    </script>
 </body>
 </html>

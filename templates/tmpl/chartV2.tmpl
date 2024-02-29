@@ -19,9 +19,6 @@
         grid: {
             right: '20%'
         },
-        legend: {
-            data: ['{{.Title}}]
-        },
         xAxis: [
             {
                 type: 'category',
@@ -31,32 +28,43 @@
                 axisTick: {
                     alignWithLabel: true
                 },
-                data: [{{ range .Data }}'{{ .Period }}', {{ end }}]
+                data: [{{ range .PeriodData }}'{{ .Period }}', {{ end }}]
             }
         ],
         yAxis: [
             {
                 type: 'value',
-                name: 'Run time',
                 position: 'left',
                 alignTicks: true,
                 axisLine: {
                     show: true,
                 },
                 axisLabel: {
-                    formatter: '{value} min'
+                    formatter: '{value} {{.YAxisUnit}}'
                 }
             },
+        ],
+        dataZoom: [
+        {
+          type: 'inside',
+          start: 0,
+          end: 100
+        },
+        {
+          start: 0,
+          end: 100
+        }
         ],
         series: [
             {
                 name: '{{.Title}}',
-                type: 'bar',
-                data: [{{ range .Data }}{{ .RunTime }}, {{ end }}]
+                type: 'line',
+                data: [{{ range .PeriodData }}{{ .Data }}, {{ end }}]
             },
         ]
     };
 
     chart.setOption(option);
+    chart.group = 'ChartGroup1'
     window.addEventListener('resize', chart.resize);
 </script>

@@ -1,11 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" style="height: 100%">
-<head>
+
+<style>
+.charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.chart-wrapper {
+  flex: 0 0 800px; /* Adjust this value based on your desired width, leaving room for margins */
+  margin-bottom: 10px; /* Space between rows */
+}
+</style>
+
+<head style="">
     <meta charset="utf-8">
 </head>
 <body style="height: 100%; margin: 0; background-color:#100C2A">
     <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+    <p style="color:#fff; font-size: large; text-align:center; margin: 0">Daikin Dashboard</p>
+    <div class="charts-container">
+
     {{ . }}
+
+    </div>
+
     <script type="text/javascript">
         echarts.connect('ChartGroup1')
     </script>

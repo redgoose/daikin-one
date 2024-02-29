@@ -1,6 +1,6 @@
-<p style="color:#fff; text-align:center">{{.Title}}</p>
-<div id="{{.Title}}" style="height: 500px"></div>
-
+<div class="chart-wrapper">
+    <div id="{{.Title}}" style="height: 300px; width: 800px"></div>
+</div>
 <script type="text/javascript">
     var dom = document.getElementById('{{.Title}}');
     var chart = echarts.init(dom, 'dark', {
@@ -18,6 +18,9 @@
         },
         grid: {
             right: '20%'
+        },
+        legend: {
+            data: ['{{.Title}}']
         },
         xAxis: [
             {

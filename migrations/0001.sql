@@ -8,4 +8,8 @@ CREATE TABLE daikin(
     cool_setpoint REAL,
     heat_setpoint REAL,
     equipment_status INTEGER
+    outdoor_heat REAL;
+    outdoor_cool REAL;
+    indoor_fan REAL;
+    indoor_heat REAL;
 );

@@ -13,6 +13,9 @@ import (
 	"github.com/redgoose/daikin-skyport"
 )
 
+// The data from the device is 2x actual. So percentages values range from 0-200.
+const DAIKIN_PERCENT_MULTIPLIER = 2
+
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Args:  cobra.NoArgs,
@@ -34,6 +37,10 @@ var logCmd = &cobra.Command{
 			CoolSetpoint:    deviceInfo.CspHome,
 			HeatSetpoint:    deviceInfo.HspHome,
 			EquipmentStatus: int(deviceInfo.EquipmentStatus),
+			OutdoorHeat:     float32(deviceInfo.CtOutdoorHeatRequestedDemand) / DAIKIN_PERCENT_MULTIPLIER,
+			OutdoorCool:     float32(deviceInfo.CtOutdoorCoolRequestedDemand) / DAIKIN_PERCENT_MULTIPLIER,
+			IndoorFan:       float32(deviceInfo.CtIFCCurrentFanActualStatus) / DAIKIN_PERCENT_MULTIPLIER,
+			IndoorHeat:      float32(deviceInfo.CtIFCCurrentHeatActualStatus) / DAIKIN_PERCENT_MULTIPLIER,
 		}
 
 		db.LogData(dbPath, data)

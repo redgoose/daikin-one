@@ -17,6 +17,10 @@ type DeviceData struct {
 	CoolSetpoint    float32
 	HeatSetpoint    float32
 	EquipmentStatus int
+	OutdoorHeat     float32 // demand for heat from heat pump in %
+	OutdoorCool     float32 // demand for cool from heat pump in %
+	IndoorFan       float32 // hvac fan actual usage in %
+	IndoorHeat      float32 // furnace heat actual usage %
 }
 
 type PeriodData struct {
@@ -34,7 +38,23 @@ func LogData(dbPath string, data DeviceData) {
 	db, err := sql.Open("sqlite3", dbPath)
 	checkErr(err)
 
-	stmt, err := db.Prepare("insert into daikin (timestamp, device_id, temp_indoor, temp_outdoor, humidity_indoor, humidity_outdoor, cool_setpoint, heat_setpoint, equipment_status) values (?,?,?,?,?,?,?,?,?);")
+	sqlStatement := `INSERT INTO daikin (
+		timestamp,
+		device_id,
+		temp_indoor,
+		temp_outdoor,
+		humidity_indoor,
+		humidity_outdoor,
+		cool_setpoint,
+		heat_setpoint,
+		equipment_status,
+		outdoor_heat,
+		outdoor_cool,
+		indoor_fan,
+		indoor_heat
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+
+	stmt, err := db.Prepare(sqlStatement)
 	checkErr(err)
 
 	var timestamp string = time.Now().Format(time.RFC3339)
@@ -49,6 +69,10 @@ func LogData(dbPath string, data DeviceData) {
 		data.CoolSetpoint,
 		data.HeatSetpoint,
 		data.EquipmentStatus,
+		data.OutdoorHeat,
+		data.OutdoorCool,
+		data.IndoorFan,
+		data.IndoorHeat,
 	)
 	checkErr(err)
 }

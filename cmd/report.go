@@ -29,17 +29,17 @@ var reportAllCmd = &cobra.Command{
 		allCharts := ""
 
 		fields := []string{
-			"temp_indoor",
 			"temp_outdoor",
-			"humidity_indoor",
+			"temp_indoor",
 			"humidity_outdoor",
+			"humidity_indoor",
 			"cool_setpoint",
 			"heat_setpoint",
-			"equipment_status",
 			"outdoor_heat",
 			"outdoor_cool",
 			"indoor_fan",
 			"indoor_heat",
+			// "equipment_status", -- I think this is fully covered by other charts now?
 		}
 
 		for _, field := range fields {

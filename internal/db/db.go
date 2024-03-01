@@ -43,7 +43,27 @@ type PeriodData struct {
 type AnyData struct {
 	Period string
 	Data   float32
+	Unit   string
 }
+
+func GetUnitsByFieldMap() map[string]string {
+	// Note these represent the storage unit and may be converted later for presentation
+	return map[string]string{
+		"temp_outdoor":     "°C",
+		"temp_indoor":      "°C",
+		"humidity_outdoor": "%",
+		"humidity_indoor":  "%",
+		"cool_setpoint":    "°C",
+		"heat_setpoint":    "°C",
+		"outdoor_heat":     "%",
+		"outdoor_cool":     "%",
+		"indoor_fan":       "%",
+		"indoor_heat":      "%",
+		"equipment_status": "",
+	}
+}
+
+var unitsByFieldMap = GetUnitsByFieldMap()
 
 func LogData(dbPath string, data DeviceData) {
 	db, err := sql.Open("sqlite3", dbPath)
@@ -117,6 +137,10 @@ func GetDataRaw(dbPath string, deviceId string, col string) []AnyData {
 			&data.Data,
 		)
 		checkErr(err)
+
+		// Set the data's unit from lookup map
+		data.Unit = unitsByFieldMap[col]
+
 		allData = append(allData, data)
 	}
 

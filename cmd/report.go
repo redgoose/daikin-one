@@ -43,7 +43,7 @@ var reportAllCmd = &cobra.Command{
 		}
 
 		for _, field := range fields {
-			allCharts += charts.GetChartForField(dbPath, deviceId, field, time.Now(), temperatureUnit)
+			allCharts += charts.GetChartForField(dbPath, deviceId, field, temperatureUnit)
 		}
 
 		baseTmpl.Execute(os.Stdout, allCharts)

@@ -53,22 +53,39 @@ func convertTempsCtoFv2(periods []db.AnyData) []db.AnyData {
 	return periods
 }
 
-func GetChartForField(dbPath string, deviceId string, field string, date time.Time, temperatureUnit string) string {
+func convertDbTimeToDisplayTime(periods []db.AnyData) []db.AnyData {
+	for i := range periods {
+		t, err := time.Parse(time.RFC3339, periods[i].Period)
+		if err != nil {
+			panic(err)
+		}
+
+		periods[i].Period = t.Format(time.DateTime)
+	}
+	return periods
+}
+
+func GetChartForField(dbPath string, deviceId string, field string, temperatureUnit string) string {
 	output := ""
 
 	data := db.GetDataRaw(dbPath, deviceId, field)
 
-	// TODO: Not all data is temperature, need to maintain a map of data tpe to display type...
-	// if temperatureUnit == "F" {
-	// data = convertTempsCtoFv2(data)
-	// }
-
 	if len(data) > 0 {
+		// All data in the array uses the same displayUnit, so grab from the first element.
+		// If the displayUnit is C and if the config is set to F then convert the data and switch the displayUnit to F for chart.
+		displayUnit := data[0].Unit
+		if displayUnit == "°C" && temperatureUnit == "F" {
+			data = convertTempsCtoFv2(data)
+			displayUnit = "°F"
+		}
+
+		data = convertDbTimeToDisplayTime(data)
+
 		chart := ChartV2{
 			Title:      field,
 			PeriodData: data,
 			XAxisLabel: "Time",
-			YAxisUnit:  "%",
+			YAxisUnit:  displayUnit,
 		}
 
 		buf := new(bytes.Buffer)

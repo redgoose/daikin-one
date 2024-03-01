@@ -11,10 +11,18 @@
     var option = {
         color: colors,
         tooltip: {
-            trigger: 'none',
+            trigger: 'axis',
             axisPointer: {
-                type: 'cross'
-            }
+                type: 'cross',
+                axis: 'x',
+            },
+            valueFormatter: (value) => value + ' {{.YAxisUnit}}',
+            backgroundColor: '#19143a',
+            borderColor: '#333',
+            padding: 3,
+            textStyle: {
+                color: '#ccc',
+            },
         },
         grid: {
             right: '20%'

@@ -60,7 +60,7 @@ func convertDbTimeToDisplayTime(periods []db.AnyData) []db.AnyData {
 			panic(err)
 		}
 
-		periods[i].Period = t.Format(time.DateTime)
+		periods[i].Period = t.Format("Jan 02 15:04")
 	}
 	return periods
 }

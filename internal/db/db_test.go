@@ -23,7 +23,10 @@ func getDbPath() string {
 func TestGetDataRaw(t *testing.T) {
 	dbPath := getDbPath()
 
-	result := GetDataRaw(dbPath, deviceId, "outdoor_heat")
+	now := time.Now()
+	startDate := now.AddDate(0, 0, -7)
+
+	result := GetDataRaw(dbPath, deviceId, "outdoor_heat", startDate, now)
 
 	if len(result) == 0 {
 		t.Fatalf("No results")
@@ -32,7 +35,7 @@ func TestGetDataRaw(t *testing.T) {
 
 func TestGetDataForDay(t *testing.T) {
 	dbPath := getDbPath()
-	result := GetDataForDay(dbPath, deviceId, time.Now())
+	result := GetDataForDay(dbPath, deviceId, time.Now().AddDate(0, 0, -1))
 
 	if len(result) == 0 {
 		t.Fatalf("No results")

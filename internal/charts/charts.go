@@ -65,10 +65,10 @@ func convertDbTimeToDisplayTime(periods []db.AnyData) []db.AnyData {
 	return periods
 }
 
-func GetChartForField(dbPath string, deviceId string, field string, temperatureUnit string) string {
+func GetChartForField(dbPath string, deviceId string, field string, startTime time.Time, endTime time.Time, temperatureUnit string) string {
 	output := ""
 
-	data := db.GetDataRaw(dbPath, deviceId, field)
+	data := db.GetDataRaw(dbPath, deviceId, field, startTime, endTime)
 
 	if len(data) > 0 {
 		// All data in the array uses the same displayUnit, so grab from the first element.

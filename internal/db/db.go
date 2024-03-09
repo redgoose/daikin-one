@@ -110,7 +110,7 @@ func LogData(dbPath string, data DeviceData) {
 
 // Get the data for a single column
 // TODO: Add date range filter
-func GetDataRaw(dbPath string, deviceId string, col string) []AnyData {
+func GetDataRaw(dbPath string, deviceId string, col string, startTime time.Time, endTime time.Time) []AnyData {
 	db, err := sql.Open("sqlite3", dbPath)
 	checkErr(err)
 
@@ -121,8 +121,10 @@ func GetDataRaw(dbPath string, deviceId string, col string) []AnyData {
 			%s
 		from daikin
 		where device_id = ?
+		and timestamp >= ? 
+		and timestamp <= ?
 		;
-	`, col), deviceId)
+	`, col), deviceId, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
 	checkErr(err)
 
 	defer rows.Close()

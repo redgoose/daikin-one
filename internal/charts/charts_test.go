@@ -92,7 +92,9 @@ func TestConvertTempsCtoF(t *testing.T) {
 func TestGetChartForField(t *testing.T) {
 	dbPath := getDbPath()
 	field := "outdoor_heat"
-	res := GetChartForField(dbPath, deviceId, field, time.Now(), "F")
+	now := time.Now()
+	startDate := now.AddDate(0, 0, -7)
+	res := GetChartForField(dbPath, deviceId, field, startDate, time.Now(), "F")
 
 	println(res)
 }

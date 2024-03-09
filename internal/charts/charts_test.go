@@ -1,11 +1,26 @@
 package charts
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/redgoose/daikin-one/internal/db"
 )
+
+const deviceId = "TO DO CHANGE ME"
+
+func getDbPath() string {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	dbPath := filepath.Join(homeDir, ".daikin", "daikin.db")
+	return dbPath
+}
 
 func TestConvertTempsCtoF(t *testing.T) {
 	// Define a test case with known input and expected output
@@ -72,4 +87,14 @@ func TestConvertTempsCtoF(t *testing.T) {
 
 		}
 	}
+}
+
+func TestGetChartForField(t *testing.T) {
+	dbPath := getDbPath()
+	field := "outdoor_heat"
+	now := time.Now()
+	startDate := now.AddDate(0, 0, -7)
+	res := GetChartForField(dbPath, deviceId, field, startDate, time.Now(), "F")
+
+	println(res)
 }

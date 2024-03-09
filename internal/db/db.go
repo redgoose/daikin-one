@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -17,6 +18,10 @@ type DeviceData struct {
 	CoolSetpoint    float32
 	HeatSetpoint    float32
 	EquipmentStatus int
+	OutdoorHeat     float32 // demand for heat from heat pump in %
+	OutdoorCool     float32 // demand for cool from heat pump in %
+	IndoorFan       float32 // hvac fan actual usage in %
+	IndoorHeat      float32 // furnace heat actual usage %
 }
 
 type PeriodData struct {
@@ -28,13 +33,59 @@ type PeriodData struct {
 	CoolSetpoint    float32
 	HeatSetpoint    float32
 	RunTime         int
+	OutdoorHeat     float32 // TODO: These do NOT support null. So we need to either
+	OutdoorCool     float32 // Assume they will never be null, or change to support null..?
+	IndoorFan       float32
+	IndoorHeat      float32
 }
+
+// Represents a data timeseries data point.
+type AnyData struct {
+	Period string
+	Data   float32
+	Unit   string
+}
+
+func GetUnitsByFieldMap() map[string]string {
+	// Note these represent the storage unit and may be converted later for presentation
+	return map[string]string{
+		"temp_outdoor":     "°C",
+		"temp_indoor":      "°C",
+		"humidity_outdoor": "%",
+		"humidity_indoor":  "%",
+		"cool_setpoint":    "°C",
+		"heat_setpoint":    "°C",
+		"outdoor_heat":     "%",
+		"outdoor_cool":     "%",
+		"indoor_fan":       "%",
+		"indoor_heat":      "%",
+		"equipment_status": "",
+	}
+}
+
+var unitsByFieldMap = GetUnitsByFieldMap()
 
 func LogData(dbPath string, data DeviceData) {
 	db, err := sql.Open("sqlite3", dbPath)
 	checkErr(err)
 
-	stmt, err := db.Prepare("insert into daikin (timestamp, device_id, temp_indoor, temp_outdoor, humidity_indoor, humidity_outdoor, cool_setpoint, heat_setpoint, equipment_status) values (?,?,?,?,?,?,?,?,?);")
+	sqlStatement := `INSERT INTO daikin (
+		timestamp,
+		device_id,
+		temp_indoor,
+		temp_outdoor,
+		humidity_indoor,
+		humidity_outdoor,
+		cool_setpoint,
+		heat_setpoint,
+		equipment_status,
+		outdoor_heat,
+		outdoor_cool,
+		indoor_fan,
+		indoor_heat
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+
+	stmt, err := db.Prepare(sqlStatement)
 	checkErr(err)
 
 	var timestamp string = time.Now().Format(time.RFC3339)
@@ -49,8 +100,56 @@ func LogData(dbPath string, data DeviceData) {
 		data.CoolSetpoint,
 		data.HeatSetpoint,
 		data.EquipmentStatus,
+		data.OutdoorHeat,
+		data.OutdoorCool,
+		data.IndoorFan,
+		data.IndoorHeat,
 	)
 	checkErr(err)
+}
+
+// Get the data for a single column
+// TODO: Add date range filter
+func GetDataRaw(dbPath string, deviceId string, col string, startTime time.Time, endTime time.Time) []AnyData {
+	db, err := sql.Open("sqlite3", dbPath)
+	checkErr(err)
+
+	// Sql formatted to select for col parameter
+	rows, err := db.Query(fmt.Sprintf(`
+		select
+			timestamp,
+			%s
+		from daikin
+		where device_id = ?
+		and timestamp >= ? 
+		and timestamp <= ?
+		;
+	`, col), deviceId, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
+	checkErr(err)
+
+	defer rows.Close()
+
+	var allData []AnyData
+
+	for rows.Next() {
+		var data AnyData
+
+		err := rows.Scan(
+			&data.Period,
+			&data.Data,
+		)
+		checkErr(err)
+
+		// Set the data's unit from lookup map
+		data.Unit = unitsByFieldMap[col]
+
+		allData = append(allData, data)
+	}
+
+	err = rows.Err()
+	checkErr(err)
+
+	return allData
 }
 
 func GetDataForDay(dbPath string, deviceId string, day time.Time) []PeriodData {

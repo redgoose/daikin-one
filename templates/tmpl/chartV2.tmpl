@@ -1,0 +1,81 @@
+<div class="chart-wrapper">
+    <div id="{{.Title}}" style="height: 300px; width: 800px"></div>
+</div>
+<script type="text/javascript">
+    var dom = document.getElementById('{{.Title}}');
+    var chart = echarts.init(dom, 'dark', {
+        renderer: 'canvas',
+        useDirtyRect: false
+    });
+    var colors = ['#3d8dad', '#d0b108', '#57b370', '#3d8dad', '#d46728', '#7540ad', '#ba339d'];
+    var option = {
+        color: colors,
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                axis: 'x',
+            },
+            valueFormatter: (value) => value + ' {{.YAxisUnit}}',
+            backgroundColor: '#19143a',
+            borderColor: '#333',
+            padding: 3,
+            textStyle: {
+                color: '#ccc',
+            },
+        },
+        grid: {
+            right: '20%'
+        },
+        legend: {
+            data: ['{{.Title}}']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                name: '{{.XAxisLabel}}',
+                nameLocation: 'center',
+                nameGap: 30,
+                axisTick: {
+                    alignWithLabel: true
+                },
+                data: [{{ range .PeriodData }}'{{ .Period }}', {{ end }}]
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                position: 'left',
+                alignTicks: true,
+                axisLine: {
+                    show: true,
+                },
+                axisLabel: {
+                    formatter: '{value} {{.YAxisUnit}}'
+                }
+            },
+        ],
+        dataZoom: [
+        {
+          type: 'inside',
+          start: 0,
+          end: 100
+        },
+        {
+          start: 0,
+          end: 100
+        }
+        ],
+        series: [
+            {
+                name: '{{.Title}}',
+                type: 'line',
+                data: [{{ range .PeriodData }}{{ .Data }}, {{ end }}]
+            },
+        ]
+    };
+
+    chart.setOption(option);
+    chart.group = 'ChartGroup1'
+    window.addEventListener('resize', chart.resize);
+</script>
